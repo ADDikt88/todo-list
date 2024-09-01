@@ -3,6 +3,26 @@
     padding: 0;
 }
 
+div {
+    border: 1px solid black;
+}
+
 body {
-    background-color: aquamarine;
+    background-color:beige;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    height: 100vh;
+}
+
+
+
+.sidebar {
+    background-color: rgb(250, 218, 176);
+    display: grid;
+    grid-template-rows: 300px 1fr;
+}
+
+.main-page {
+    display: grid;
+    grid-template-rows: 150px 1fr;
 }
