@@ -1,12 +1,12 @@
 //import icon from "./icon.jpg";
 
 import { dueDateMenu } from "./dueDateMenu.js";
-import { projectList } from "./projectList.js";
+import { displayProjectList } from "./projectList.js";
 
 function sidebar () {
     const content = document.querySelector(".sidebar");
     content.appendChild(dueDateMenu());
-    content.appendChild(projectList());
+    content.appendChild(displayProjectList());
 }
 
 export {sidebar};

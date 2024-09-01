@@ -1,4 +1,12 @@
-function projectList () {
+//import {defaultProject} from "./sidebar.js"
+
+
+
+//function 
+
+
+
+function displayProjectList () {
     const projectListContainer = document.createElement("div");
     projectListContainer.setAttribute("class", "project-list");
     
@@ -9,4 +17,4 @@ function projectList () {
     return projectListContainer;
 }
 
-export {projectList};
+export {displayProjectList};
