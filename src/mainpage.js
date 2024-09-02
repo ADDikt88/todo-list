@@ -3,13 +3,15 @@
  * This is the main page of the to do list app and displays the current project and it's to do list.
  */
 
+
 function mainpage () {
     const content = document.querySelector(".main-page");
        
     displayProjectHeader (content, defaultProject);
     displayToDoItems (content, defaultProject);
-  
-    
+
+
+ 
 }
 
 function createProject (title, description, toDoItems) {
@@ -29,8 +31,14 @@ function createToDo (title, description, priority, status) {
             this.status = true;
     }
 
+    function editItem (newTitle, newDesc, newPriority) {
+        this.title = newTitle;
+        this.description = newDesc;
+        this.priority = newPriority;
+    }
+
     return {
-        title, description, priority, status, changeStatus,
+        title, description, priority, status, changeStatus, editItem,
     }
 
 }
@@ -44,7 +52,7 @@ function addToDo(currenTaskList, currentProject, container) {
 
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
-    let prioirtyLevel = document.querySelector("#priorityLevel").value;
+    let priorityLevel = document.querySelector("#priorityLevel").value;
 
     //newBook.id = myLibrary.length;
     
@@ -60,11 +68,38 @@ function addToDo(currenTaskList, currentProject, container) {
         if (taskDescription < 1)
             taskDescription = "_";
 
-        currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, prioirtyLevel, false));
+        currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, false));
         console.log("UPDATED");
         const position = defaultProject.toDoItems.length - 1;
         updateToDoItems (defaultProject, container, position);
         //libraryContainer.appendChild(myLibrary[myLibrary.length - 1].createBook());
+        return true;
+    }
+};
+
+
+function editToDo(currentProject, container, position) {
+
+    //newBook.id = myLibrary.length;    
+
+
+    let taskTitle = document.querySelector("#taskTitle").value;
+    let taskDescription = document.querySelector("#taskDescription").value;
+    let priorityLevel = document.querySelector("#priorityLevel").value;
+    
+    if (taskTitle < 1)
+    {
+        alert("Please enter a new task title");
+        console.log("TRY AGAIN");
+        return false;
+    }
+    else 
+    {   
+        if (taskDescription < 1)
+            taskDescription = "_";
+
+        currentProject.toDoItems[position].editItem(taskTitle, taskDescription,priorityLevel);
+        console.log("UPDATED");
         return true;
     }
 };
@@ -100,37 +135,32 @@ function displayToDoItems (content, currentProject) {
     const addToDoItemBtn = document.createElement("button");
     toDoContainer.appendChild(addToDoItemBtn);
     addToDoItemBtn.textContent = "Add Task";
-
+    
     const dialogForm = document.querySelector("#addActionForm");
     const dialog = document.querySelector("#addItemDialog");
 
     addToDoItemBtn.addEventListener('click', (e) => {
         dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+        confirmBtn.onclick = function(e) {
+            //add an item function
+            console.log("CONFIRM");
+            if(addToDo(listOfItems, currentProject, toDoContainer))
+                dialog.close();
+            e.preventDefault();
+        }
+
+        // When the user clicks the close button, close the dialog
+        closeDialogBtn.onclick = function(e) {
+            dialog.close();
+            e.preventDefault();
+        }
         dialog.showModal();
+      
         e.preventDefault();
     });
 
-
-    // When the user clicks the confirm button, close the dialog
-    confirmBtn.addEventListener('click', (e) => {
-        //add an item function
-        console.log("CONFIRM");
-        if(addToDo(listOfItems, currentProject, toDoContainer))
-            dialog.close();
-        e.preventDefault();              
-
-    });
-
-    // When the user clicks the close button, close the dialog
-    closeDialogBtn.addEventListener('click', (e) => {
-        dialog.close();
-        e.preventDefault();    
-    });
-
     updateToDoItems (currentProject, toDoContainer, 0);
-
-
-
 
 }
 
@@ -142,6 +172,16 @@ function updateToDoItems (currentProject, container, position) {
     toDoItem.style.padding = "5px";
     toDoItem.style.margin = "5px";
     container.appendChild(toDoItem);
+
+    //Create STATIC elements
+    const toDoTitle = document.createElement("div");
+    const toDoDescription = document.createElement("div");
+    const priorityLevel = document.createElement("div");
+
+    toDoTitle.textContent = currentProject.toDoItems[position].title;
+    toDoTitle.style.fontSize = "1.5rem";
+    toDoDescription.textContent = currentProject.toDoItems[position].description;
+    priorityLevel.textContent = currentProject.toDoItems[position].priority;
 
     //Create FUNCTIONAL elements
     //create status element
@@ -177,7 +217,42 @@ function updateToDoItems (currentProject, container, position) {
     editBtn.textContent = "Edit";
     editDelDiv.appendChild(editBtn);
 
-    //addAction(container, editBtn, currentProject);
+    const dialogForm = document.querySelector("#addActionForm");
+    const dialog = document.querySelector("#addItemDialog");
+
+
+
+
+    editBtn.addEventListener('click', (e) => {
+        // dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+
+        document.querySelector("#taskTitle").value = currentProject.toDoItems[position].title;
+        document.querySelector("#taskDescription").value = currentProject.toDoItems[position].description;
+        document.querySelector("#priorityLevel").value = currentProject.toDoItems[position].priority;
+        
+        confirmBtn.onclick = function(e) {
+            //add an item function
+            console.log("CONFIRM");
+            if(editToDo(currentProject, container, position)){
+                dialog.close();
+                toDoTitle.textContent = currentProject.toDoItems[position].title;
+                toDoDescription.textContent = currentProject.toDoItems[position].description;
+                priorityLevel.textContent = currentProject.toDoItems[position].priority;
+            }
+                
+            e.preventDefault();
+        }
+
+        // When the user clicks the close button, close the dialog
+        closeDialogBtn.onclick = function(e) {
+            dialog.close();
+            e.preventDefault();
+        }
+        dialog.showModal();
+      
+        e.preventDefault();
+    });
 
 
 
@@ -198,15 +273,7 @@ function updateToDoItems (currentProject, container, position) {
 
 
 
-    //Create STATIC elements
-    const toDoTitle = document.createElement("div");
-    const toDoDescription = document.createElement("div");
-    const priorityLevel = document.createElement("div");
-
-    toDoTitle.textContent = currentProject.toDoItems[position].title;
-    toDoTitle.style.fontSize = "1.5rem";
-    toDoDescription.textContent = currentProject.toDoItems[position].description;
-    priorityLevel.textContent = currentProject.toDoItems[position].priority;
+    //Append all items
 
     toDoItem.appendChild(titleDiv);
     titleDiv.appendChild(toDoTitle);
