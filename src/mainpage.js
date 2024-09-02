@@ -6,37 +6,41 @@
 function mainpage () {
     const content = document.querySelector(".main-page");
        
-    displayProjectHeader (content);
-    displayToDoItems (content);
-    
-
+    displayProjectHeader (content, defaultProject);
+    displayToDoItems (content, defaultProject);
+  
     
 }
 
 function createProject (title, description, toDoItems) {
 
-
-    
     return {
         title, description, toDoItems,
     }
 
 }
 
-function createToDo (title, description, priority) {
+function createToDo (title, description, priority, status) {
+
+    function changeStatus (){
+        if (status)
+            this.status = false;
+        else
+            this.status = true;
+    }
 
     return {
-        title, description, priority
+        title, description, priority, status, changeStatus,
     }
 
 }
 
 let listOfItems = [];
-listOfItems.push(createToDo("First to do item", "Create an HTML file", "high"));
+listOfItems.push(createToDo("First to do item", "Create an HTML file", "high", false));
 
 let defaultProject = createProject ("Default", "This is a default project description", listOfItems);
 
-function addToDo(currenTaskList, e, dialog) {
+function addToDo(currenTaskList, currentProject, container) {
 
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
@@ -56,16 +60,17 @@ function addToDo(currenTaskList, e, dialog) {
         if (taskDescription < 1)
             taskDescription = "_";
 
-        defaultProject.toDoItems.push(createToDo(taskTitle, taskDescription, prioirtyLevel));
+        currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, prioirtyLevel, false));
         console.log("UPDATED");
-        updateToDoItems();
+        const position = defaultProject.toDoItems.length - 1;
+        updateToDoItems (defaultProject, container, position);
         //e.preventDefault();
         //libraryContainer.appendChild(myLibrary[myLibrary.length - 1].createBook());
         return true;
     }
 };
 
-function addAction(container, addToDoItemBtn) {
+function addAction(container, addToDoItemBtn, currentProject) {
     const dialog = document.querySelector("#addItemDialog");
     const confirmBtn = document.querySelector("#confirmBtn");
     const closeDialogBtn = document.querySelector("#closeDialogBtn");
@@ -78,7 +83,7 @@ function addAction(container, addToDoItemBtn) {
     confirmBtn.addEventListener('click', (e) => {
         //add an item function
         console.log("CONFIRM");
-        if(addToDo(listOfItems, e, dialog))
+        if(addToDo(listOfItems, currentProject, container))
         {
             
             dialog.close();
@@ -108,19 +113,19 @@ function addAction(container, addToDoItemBtn) {
 /****
  * These functions display the project header and the to-do-list frame
  */
-function displayProjectHeader (content) {
+function displayProjectHeader (content, currentProject) {
     const projectHeader = document.createElement("div");
     content.appendChild(projectHeader);
     
     const projectTitle = document.createElement("div");
     const projectDescription = document.createElement("div");
-    projectTitle.textContent = defaultProject.title;
-    projectDescription.textContent = defaultProject.description;
+    projectTitle.textContent = currentProject.title;
+    projectDescription.textContent = currentProject.description;
     projectHeader.appendChild(projectTitle);
     projectHeader.appendChild(projectDescription);
 }
 
-function displayToDoItems (content) {
+function displayToDoItems (content, currentProject) {
     const toDoContainer = document.createElement("div");
     toDoContainer.setAttribute("class", "to-do-container");
     content.appendChild(toDoContainer);
@@ -129,43 +134,48 @@ function displayToDoItems (content) {
     toDoContainer.appendChild(addToDoItemBtn);
     addToDoItemBtn.textContent = "Add Task";
 
-    const toDoItem = document.createElement("div");
-    toDoContainer.appendChild(toDoItem);
-
-    const toDoTitle = document.createElement("div");
-    const toDoDescription = document.createElement("div");
-    const priorityLevel = document.createElement("div");
-
-    toDoTitle.textContent = defaultProject.toDoItems[0].title;
-    toDoDescription.textContent = defaultProject.toDoItems[0].description;
-    priorityLevel.textContent = defaultProject.toDoItems[0].priority;
-    toDoItem.appendChild(toDoTitle);
-    toDoItem.appendChild(toDoDescription);
-    toDoItem.appendChild(priorityLevel);
-
-    addAction(toDoContainer, addToDoItemBtn);
+    updateToDoItems (currentProject, toDoContainer, 0);
+    addAction(toDoContainer, addToDoItemBtn, currentProject);
 
 
 }
 
-function updateToDoItems () {
-    const toDoContainer = document.querySelector(".to-do-container");
+function updateToDoItems (currentProject, container, position) {
+
     const toDoItem = document.createElement("div");
-    toDoContainer.appendChild(toDoItem);
+    toDoItem.setAttribute("id", "taskID_" + position)
+    container.appendChild(toDoItem);
+
+    const statusDiv = document.createElement("div");
+    statusDiv.textContent = "Complete?";
+    statusDiv.style.display = "flex";
+    const status = document.createElement("input");
+    status.setAttribute("type", "checkbox");
+    statusDiv.appendChild(status);
 
     const toDoTitle = document.createElement("div");
     const toDoDescription = document.createElement("div");
     const priorityLevel = document.createElement("div");
 
-    toDoTitle.textContent = defaultProject.toDoItems[defaultProject.toDoItems.length-1].title;
-    toDoDescription.textContent = defaultProject.toDoItems[defaultProject.toDoItems.length-1].description;
-    priorityLevel.textContent = defaultProject.toDoItems[defaultProject.toDoItems.length-1].priority;
+    toDoTitle.textContent = currentProject.toDoItems[position].title;
+    toDoDescription.textContent = currentProject.toDoItems[position].description;
+    priorityLevel.textContent = currentProject.toDoItems[position].priority;
 
+    toDoItem.appendChild(statusDiv);
     toDoItem.appendChild(toDoTitle);
     toDoItem.appendChild(toDoDescription);
     toDoItem.appendChild(priorityLevel);
 
-    console.log(defaultProject.toDoItems);
+    //Checkbox listener for status
+    statusDiv.addEventListener("change", function(e) {
+        if (e.target.checked) {
+            toDoItem.style.backgroundColor = "#a9f7c7";
+        } else {
+            toDoItem.style.backgroundColor = "";
+        }
+    });
+
+    console.log(currentProject.toDoItems);
 
 }
 
