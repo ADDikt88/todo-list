@@ -6,19 +6,15 @@ import {projectList, selectedProjectID} from "./projectList.js";
  * This is the main page of the to do list app and displays the current project and it's to do list.
  */
 
-//let currentProject = projectList[selectedProjectID];
-//listOfItems.push(createToDo("First to do item", "Create an HTML file", "high", false));
 
 function mainpage () {
     const content = document.querySelector(".main-page");
     let currentProject = projectList[selectedProjectID];
     displayProjectHeader (content, currentProject);
-    displayToDoItems (content, currentProject);
- 
+    displayToDoItems (content, currentProject); 
 }
 
 function createToDo (title, description, priority, editBtn, delBtn, checkmark, status) {
-
 
     function editItem (newTitle, newDesc, newPriority) {
         this.title = newTitle;
@@ -31,9 +27,6 @@ function createToDo (title, description, priority, editBtn, delBtn, checkmark, s
     }
 
 }
-
-
-
 
 //These two functions add or edit the to do list
 function addToDo(currentProject, container) {
@@ -61,8 +54,7 @@ function addToDo(currentProject, container) {
         const position = currentProject.toDoItems.length - 1;
         updateToDoItems (currentProject, container, position);
         return true;
-        
-        
+                
     }
 };
 
@@ -143,6 +135,12 @@ function displayToDoItems (content, currentProject) {
         }
         dialog.showModal();
       
+        dialogForm.addEventListener('keydown', function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+            }
+        });
+
         e.preventDefault();
     });
 

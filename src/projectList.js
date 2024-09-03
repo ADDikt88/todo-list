@@ -48,7 +48,7 @@ function newProject(container) {
         mainpage();
         console.log(projectList);
         return true;
-        
+      
         
     }
 };
@@ -96,6 +96,12 @@ function displayProjectList () {
             e.preventDefault();
         }
         dialog.showModal();
+
+        dialogForm.addEventListener('keydown', function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+            }
+        });
       
         e.preventDefault();
     });
