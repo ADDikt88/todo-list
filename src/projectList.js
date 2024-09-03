@@ -1,20 +1,138 @@
-//import {defaultProject} from "./sidebar.js"
+import {mainpage, displayProjectHeader, displayToDoItems} from "./mainpage.js";
+import trashIcon from "./trash.svg";
 
-
+let listOfItems = [];
+let defaultProject = createProject ("Default", "This is a default project description", listOfItems, undefined);
+let projectList = [defaultProject];
+let selectedProjectID = 0;
 
 //function 
+function createProject (title, description, toDoItems, delBtn) {
 
+    function editProj (newTitle, newDesc) {
+        this.title = newTitle;
+        this.description = newDesc;
+    }
 
+    return {
+        title, description, toDoItems, editProj, delBtn,
+    }
+
+}
+
+//These two functions add or edit the to do list
+function newProject(container) {
+
+    let projTitle = document.querySelector("#projTitle").value;
+    let projDescription = document.querySelector("#projDescription").value;
+
+    if (projTitle < 1)
+    {
+        alert("Please enter a new project title");
+        console.log("TRY AGAIN");
+        return false;
+    }
+    else 
+    {   
+        if (projDescription < 1)
+            projDescription = "_";
+
+        projectList.push(createProject(projTitle, projDescription, listOfItems, 
+            undefined));
+        console.log("UPDATED");
+        const position = projectList.length - 1;
+        updateProjects (container, position);
+        const content = document.querySelector(".main-page");
+        content.innerHTML = "";
+        mainpage();
+        console.log(projectList);
+        return true;
+        
+        
+    }
+};
 
 function displayProjectList () {
+    
     const projectListContainer = document.createElement("div");
     projectListContainer.setAttribute("class", "project-list");
+    projectListContainer.style.display = "flex";
+    projectListContainer.style.flexDirection = "column";
+    projectListContainer.style.gap = "10px";
+
+    const addProjectBtn = document.createElement("button");
+    projectListContainer.appendChild(addProjectBtn);
+    addProjectBtn.textContent = "Add Project";
     
+    const dialogForm = document.querySelector("#addProjectForm");
+    const dialog = document.querySelector("#addProjectDialog");
+
+    addProjectBtn.addEventListener('click', (e) => {
+        dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+        projConfirmBtn.onclick = function(e) {
+            //add an item function
+            console.log("CONFIRM");
+            if(newProject(projectListContainer))
+                dialog.close();
+            e.preventDefault();
+        }
+
+        // When the user clicks the close button, close the dialog
+        projCloseDialogBtn.onclick = function(e) {
+            dialog.close();
+            e.preventDefault();
+        }
+        dialog.showModal();
+      
+        e.preventDefault();
+    });
+
+        
     const defaultProjectButton = document.createElement("button");
     defaultProjectButton.textContent = "Default Project";
+    defaultProjectButton.style.display = "flex";
+    defaultProjectButton.style.justifyContent = "center";
+    defaultProjectButton.style.gap = "10px";
     projectListContainer.appendChild(defaultProjectButton);
+    
 
+    const trashIconImg = document.createElement("img");
+    trashIconImg.src = trashIcon;
+    trashIconImg.height = "20";
+    defaultProjectButton.appendChild(trashIconImg);
+
+    
     return projectListContainer;
 }
 
-export {displayProjectList};
+
+
+function updateProjects (container, position) {
+
+    //Create Project Item
+    const projectItem = document.createElement("button");
+    projectItem.setAttribute("class", "projDiv");
+    projectItem.setAttribute("id", "projID_" + position);
+       
+    projectItem.textContent = projectList[position].title;
+    projectItem.style.display = "flex";
+    projectItem.style.justifyContent = "center";
+    projectItem.style.gap = "10px";
+    
+    const trashIconImg = document.createElement("img");
+    trashIconImg.src = trashIcon;
+    trashIconImg.height = "20";
+    
+    projectItem.appendChild(trashIconImg);
+    container.appendChild(projectItem);
+
+    selectedProjectID = position;
+
+    console.log(projectList[position].title);
+
+}
+
+
+
+export {displayProjectList, selectedProjectID, createProject, projectList};

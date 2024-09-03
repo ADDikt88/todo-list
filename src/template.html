@@ -8,7 +8,7 @@
 <!-- The dialog element -->
 <dialog id="addItemDialog">
     <form id="addActionForm">
-        <div id="dialogBase">
+        <div class="dialogBase">
             <h4>Add a task to the current project</h2>
             <div class="inputs">
                 <label for="taskTitle">Title: </label>
@@ -34,6 +34,28 @@
         </div>
     </form>
 </dialog>
+
+<!-- The dialog element -->
+<dialog id="addProjectDialog">
+    <form id="addProjectForm">
+        <div class="dialogBase">
+            <h4>Create a NEW project</h2>
+            <div class="inputs">
+                <label for="projTitle">Title: </label>
+                <input type="text" id="projTitle" placeholder=" " minlength = 1>
+            </div>
+            <div class="inputs">
+                <label for="projDescription">Description: </label>
+                <input type="text" id="projDescription" placeholder=" " minlength = 1>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button id="projCloseDialogBtn" style="padding: 2px 5px;">Cancel</button>
+                <button id="projConfirmBtn" style="padding: 2px 5px;" value="default">Confirm</button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
 <body>
     <div class="sidebar">
     </div>

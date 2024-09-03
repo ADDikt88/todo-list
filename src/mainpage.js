@@ -1,25 +1,20 @@
 //import icon from "./icon.jpg";
+import {projectList, selectedProjectID} from "./projectList.js";
+
+
 /*****
  * This is the main page of the to do list app and displays the current project and it's to do list.
  */
 
+//let currentProject = projectList[selectedProjectID];
+//listOfItems.push(createToDo("First to do item", "Create an HTML file", "high", false));
 
 function mainpage () {
     const content = document.querySelector(".main-page");
-       
-    displayProjectHeader (content, defaultProject);
-    displayToDoItems (content, defaultProject);
-
-
+    let currentProject = projectList[selectedProjectID];
+    displayProjectHeader (content, currentProject);
+    displayToDoItems (content, currentProject);
  
-}
-
-function createProject (title, description, toDoItems) {
-
-    return {
-        title, description, toDoItems,
-    }
-
 }
 
 function createToDo (title, description, priority, editBtn, delBtn, checkmark, status) {
@@ -37,24 +32,22 @@ function createToDo (title, description, priority, editBtn, delBtn, checkmark, s
 
 }
 
-let listOfItems = [];
-//listOfItems.push(createToDo("First to do item", "Create an HTML file", "high", false));
 
-let defaultProject = createProject ("Default", "This is a default project description", listOfItems);
 
-function addToDo(currenTaskList, currentProject, container) {
+
+//These two functions add or edit the to do list
+function addToDo(currentProject, container) {
 
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
     let priorityLevel = document.querySelector("#priorityLevel").value;
 
-    //newBook.id = myLibrary.length;
-    
-    
+    console.log(currentProject.title);
     if (taskTitle < 1)
     {
         alert("Please enter a new task title");
         console.log("TRY AGAIN");
+        
         return false;
     }
     else 
@@ -65,18 +58,16 @@ function addToDo(currenTaskList, currentProject, container) {
         currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
             undefined, undefined, undefined, false));
         console.log("UPDATED");
-        const position = defaultProject.toDoItems.length - 1;
-        updateToDoItems (defaultProject, container, position);
-        //libraryContainer.appendChild(myLibrary[myLibrary.length - 1].createBook());
+        const position = currentProject.toDoItems.length - 1;
+        updateToDoItems (currentProject, container, position);
         return true;
+        
+        
     }
 };
 
 
 function editToDo(currentProject, container, position) {
-
-    //newBook.id = myLibrary.length;    
-
 
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
@@ -93,7 +84,7 @@ function editToDo(currentProject, container, position) {
         if (taskDescription < 1)
             taskDescription = "_";
 
-        currentProject.toDoItems[position].editItem(taskTitle, taskDescription,priorityLevel);
+        currentProject.toDoItems[position].editItem(taskTitle, taskDescription, priorityLevel);
         console.log("UPDATED");
         return true;
     }
@@ -112,10 +103,7 @@ function displayProjectHeader (content, currentProject) {
     projectDescription.textContent = currentProject.description;
     projectHeader.appendChild(projectTitle);
     projectHeader.appendChild(projectDescription);
-
-
-
-    
+  
 }
 
 function displayToDoItems (content, currentProject) {
@@ -135,12 +123,13 @@ function displayToDoItems (content, currentProject) {
     const dialog = document.querySelector("#addItemDialog");
 
     addToDoItemBtn.addEventListener('click', (e) => {
+        console.log("add task clicked");
         dialogForm.reset();
         // When the user clicks the confirm button, close the dialog
         confirmBtn.onclick = function(e) {
             //add an item function
             console.log("CONFIRM");
-            if(addToDo(listOfItems, currentProject, toDoContainer))
+            if(addToDo(currentProject, toDoContainer))
                 dialog.close();
             e.preventDefault();
         }
@@ -322,4 +311,4 @@ function updateToDoItems (currentProject, container, position) {
 }
 
 
-export {mainpage, defaultProject};
+export {mainpage, displayProjectHeader, displayToDoItems};
