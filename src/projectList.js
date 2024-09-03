@@ -2,12 +2,12 @@ import {mainpage, displayProjectHeader, displayToDoItems} from "./mainpage.js";
 import trashIcon from "./trash.svg";
 
 let listOfItems = [];
-let defaultProject = createProject ("Default", "This is a default project description", listOfItems, undefined);
+let defaultProject = createProject ("Default Project", "This is a default project description.", listOfItems, undefined, undefined);
 let projectList = [defaultProject];
 let selectedProjectID = 0;
 
 //function 
-function createProject (title, description, toDoItems, delBtn) {
+function createProject (title, description, toDoItems, selfBtn, delBtn) {
 
     function editProj (newTitle, newDesc) {
         this.title = newTitle;
@@ -15,12 +15,12 @@ function createProject (title, description, toDoItems, delBtn) {
     }
 
     return {
-        title, description, toDoItems, editProj, delBtn,
+        title, description, toDoItems, editProj, delBtn, selfBtn,
     }
 
 }
 
-//These two functions add or edit the to do list
+//This function adds a NEW project
 function newProject(container) {
 
     let projTitle = document.querySelector("#projTitle").value;
@@ -37,9 +37,10 @@ function newProject(container) {
         if (projDescription < 1)
             projDescription = "_";
 
-        projectList.push(createProject(projTitle, projDescription, listOfItems, 
+        const emptyList = [];
+        projectList.push(createProject(projTitle, projDescription, emptyList, 
             undefined));
-        console.log("UPDATED");
+        console.log("ADDING NEW PROJECT");
         const position = projectList.length - 1;
         updateProjects (container, position);
         const content = document.querySelector(".main-page");
@@ -50,6 +51,17 @@ function newProject(container) {
         
         
     }
+};
+
+//This function SWITCHES to a project
+function switchProject(projectID) {
+    console.log("SWITCHING PROJECTS");
+    console.log(projectList);
+    selectedProjectID = projectID;
+    const content = document.querySelector(".main-page");
+    content.innerHTML = "";
+    mainpage();
+    return true;        
 };
 
 function displayProjectList () {
@@ -90,7 +102,10 @@ function displayProjectList () {
 
         
     const defaultProjectButton = document.createElement("button");
-    defaultProjectButton.textContent = "Default Project";
+    defaultProjectButton.setAttribute("class", "projDiv");
+    defaultProjectButton.setAttribute("id", "projID_" + 0);
+
+    defaultProjectButton.textContent = defaultProject.title;
     defaultProjectButton.style.display = "flex";
     defaultProjectButton.style.justifyContent = "center";
     defaultProjectButton.style.gap = "10px";
@@ -101,7 +116,16 @@ function displayProjectList () {
     trashIconImg.src = trashIcon;
     trashIconImg.height = "20";
     defaultProjectButton.appendChild(trashIconImg);
-
+    defaultProjectButton.addEventListener('click', (e) => {
+        // dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+        const currentButton = e.target.id;
+        const currentButtonID = currentButton.split('_')[1];
+        
+        switchProject(currentButtonID);
+        e.preventDefault();
+    });
+    projectList[0].selfBtn = defaultProjectButton;
     
     return projectListContainer;
 }
@@ -129,7 +153,21 @@ function updateProjects (container, position) {
 
     selectedProjectID = position;
 
-    console.log(projectList[position].title);
+    //Create Self Selection Button
+    
+
+    projectItem.addEventListener('click', (e) => {
+        // dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+        const currentButton = e.target.id;
+        const currentButtonID = currentButton.split('_')[1];
+        
+        switchProject(currentButtonID);
+        e.preventDefault();
+    });
+    projectList[selectedProjectID].selfBtn = projectItem;
+
+    console.log(projectList[position]);
 
 }
 

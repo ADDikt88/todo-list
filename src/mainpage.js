@@ -98,7 +98,9 @@ function displayProjectHeader (content, currentProject) {
     content.appendChild(projectHeader);
     
     const projectTitle = document.createElement("div");
+    projectTitle.style.fontSize = "3rem";
     const projectDescription = document.createElement("div");
+    
     projectTitle.textContent = currentProject.title;
     projectDescription.textContent = currentProject.description;
     projectHeader.appendChild(projectTitle);
@@ -144,16 +146,22 @@ function displayToDoItems (content, currentProject) {
         e.preventDefault();
     });
 
-    //updateToDoItems (currentProject, toDoContainer, 0);
+    
+    for (let k = 0; k < (currentProject.toDoItems).length; k++)
+    {
+        console.log(currentProject.title);
+        updateToDoItems(currentProject, toDoContainer, k);
+    }
 
 }
+
 
 function updateToDoItems (currentProject, container, position) {
 
     //Create Task Item
     const toDoItem = document.createElement("div");
     toDoItem.setAttribute("class", "taskDiv");
-    toDoItem.setAttribute("id", "taskID_" + position);
+    toDoItem.setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + position);
     toDoItem.style.padding = "5px";
     toDoItem.style.margin = "5px";
     container.appendChild(toDoItem);
@@ -181,8 +189,14 @@ function updateToDoItems (currentProject, container, position) {
     status.style.width = "auto";
     status.setAttribute("type", "checkbox");
     status.setAttribute("class", "statusInput");
-    status.setAttribute("id", "statusID_" + position);
+    status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
+    status.checked = currentProject.toDoItems[position].status;
+    if (status.checked)
+        toDoItem.style.backgroundColor = "#a9f7c7";
+
     currentProject.toDoItems[position].checkmark = status;
+
+
 
     status.style.transform = "scale(1.5)";
     status.style.margin = "5px";
@@ -191,7 +205,7 @@ function updateToDoItems (currentProject, container, position) {
     //Checkbox listener for status
     status.addEventListener("change", function(e) {
         const currentCheck = e.target.id;
-        const currentCheckID = currentCheck.split('_')[1];
+        const currentCheckID = currentCheck.split('_')[3];
 
         if (e.target.checked) {
             toDoItem.style.backgroundColor = "#a9f7c7";
@@ -212,7 +226,7 @@ function updateToDoItems (currentProject, container, position) {
     
     const editBtn = document.createElement("button");
     editBtn.setAttribute("class", "editBtn");
-    editBtn.setAttribute("id", "editID_" + position);
+    editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + position);
 
     currentProject.toDoItems[position].editBtn = editBtn;
     
@@ -227,7 +241,7 @@ function updateToDoItems (currentProject, container, position) {
         // dialogForm.reset();
         // When the user clicks the confirm button, close the dialog
         const currentButton = e.target.id;
-        const currentButtonID = currentButton.split('_')[1];
+        const currentButtonID = currentButton.split('_')[3];
         document.querySelector("#taskTitle").value = currentProject.toDoItems[currentButtonID].title;
         document.querySelector("#taskDescription").value = currentProject.toDoItems[currentButtonID].description;
         document.querySelector("#priorityLevel").value = currentProject.toDoItems[currentButtonID].priority;
@@ -260,7 +274,7 @@ function updateToDoItems (currentProject, container, position) {
 
     const delBtn = document.createElement("button");
     delBtn.setAttribute("class", "delBtn");
-    delBtn.setAttribute("id", "delID_" + position);
+    delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + position);
 
     currentProject.toDoItems[position].delBtn = delBtn;
 
@@ -270,9 +284,9 @@ function updateToDoItems (currentProject, container, position) {
     delBtn.addEventListener('click', (e) => {
         if (confirm("Are you sure you want to remove this task?") == true) {
             const currentButton = e.target.id;
-            const currentButtonID = currentButton.split('_')[1];
+            const currentButtonID = currentButton.split('_')[3];
 
-            let taskToRemoveID = "#taskID_" + currentButtonID;
+            let taskToRemoveID = "#projID_" + selectedProjectID + "_taskID_" + currentButtonID;
             let taskToRemove = document.querySelector(taskToRemoveID);
             container.removeChild(taskToRemove);
             currentProject.toDoItems.splice(currentButtonID,1);
@@ -284,10 +298,10 @@ function updateToDoItems (currentProject, container, position) {
 
             for (let k = 0; k < currentProject.toDoItems.length; k++)
             {
-                taskDivs[k].setAttribute("id", "taskID_" + k);
-                editBtns[k].setAttribute("id", "editID_" + k);
-                delBtns[k].setAttribute("id", "delID_" + k);
-                statusCheckmarks[k].setAttribute("id", "statusID_" + k);
+                taskDivs[k].setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + k);
+                editBtns[k].setAttribute("id", "projID_" + selectedProjectID + "_editID_" + k);
+                delBtns[k].setAttribute("id", "projID_" + selectedProjectID + "_delID_" + k);
+                statusCheckmarks[k].setAttribute("projID_" + selectedProjectID + "_id", "statusID_" + k);
             }
 
             console.log(currentProject.toDoItems);
