@@ -131,7 +131,36 @@ input[type="number"] {
   padding: 5px;
   border-radius: 12px;
   margin: 5px;
+  border: 1px solid black;
 }
+
+.projSelfBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  background-color:bisque;
+  border: none; 
+  width: 100%
+}
+.add-project-btn:hover {
+  filter: invert(0.2);
+}
+
+.projDiv:hover {
+  color: red;
+}
+
+.projSelfBtn:hover {
+  color: red;
+}
+
+
+.projDelBtn:hover {
+  filter: invert(0.5);
+}
+
 
 #proj-title {
   font-size: 3rem;
@@ -167,6 +196,10 @@ input[type="number"] {
   align-self: flex-end;
   margin: 25px 80px 5px 5px;
   
+}
+
+.add-to-do-btn:hover {
+  filter: invert(0.1);
 }
 .to-do-container {
   display: flex;
@@ -219,8 +252,13 @@ input[type="number"] {
     
 }
 
-.active, .to-do-title:hover {
-  background-color: beige;
+
+.editBtn:hover {
+  filter: invert(0.5);
+}
+
+.delBtn:hover {
+  filter: invert(0.5);
 }
 
 .to-do-title {
@@ -232,6 +270,9 @@ input[type="number"] {
   border: none;
 }
 
+.to-do-title:hover {
+  filter: brightness(1.05);
+}
 
 .to-do-desc {
   padding: 5px;

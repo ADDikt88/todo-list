@@ -11,6 +11,7 @@ import editIcon from "./edit.svg";
 
 function mainpage () {
     const content = document.querySelector(".main-page");
+    console.log("HELLO" + selectedProjectID);
     let currentProject = projectList[selectedProjectID];
     console.log(projectList + currentProject + selectedProjectID);
     displayProjectHeader (content, currentProject);
@@ -111,7 +112,7 @@ function displayProjectHeader (content, currentProject) {
     projectTitle.addEventListener('change', function (e) {
         saveText(projectTitle, currentProject);
             currentProject.title = projectTitle.value;
-            const currentProjectTitle = document.querySelector("#projID_" + selectedProjectID + " p");
+            const currentProjectTitle = document.querySelector("#projID_" + selectedProjectID + "_btn");
             currentProjectTitle.textContent = projectTitle.value;
             projectTitle.blur();
             e.preventDefault();

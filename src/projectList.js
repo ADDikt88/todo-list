@@ -35,7 +35,7 @@ function newProject(container) {
     else 
     {   
         if (projDescription < 1)
-            projDescription = "_";
+            projDescription = "";
 
         const emptyList = [];
         projectList.push(createProject(projTitle, projDescription, emptyList, 
@@ -55,7 +55,7 @@ function newProject(container) {
 
 //This function SWITCHES to a project
 function switchProject(projectID) {
-    console.log("SWITCHING PROJECTS");
+    console.log("SWITCHING PROJECTS" +  projectID);
 
     selectedProjectID = projectID;
     const content = document.querySelector(".main-page");
@@ -72,7 +72,7 @@ function displayProjectList () {
     const addProjectBtn = document.createElement("button");
     addProjectBtn.setAttribute("class","add-project-btn");
     projectListContainer.appendChild(addProjectBtn);
-    addProjectBtn.textContent = "Add Project +";
+    addProjectBtn.textContent = "New Project +";
     
     const dialogForm = document.querySelector("#addProjectForm");
     const dialog = document.querySelector("#addProjectDialog");
@@ -115,10 +115,12 @@ function displayProjectList () {
     projectListContainer.appendChild(defaultProjectButton);
     
 
-    const trashIconImg = document.createElement("img");
-    trashIconImg.src = trashIcon;
-    trashIconImg.height = "20";
-    defaultProjectButton.appendChild(trashIconImg);
+    // const trashIconImg = document.createElement("img");
+    // trashIconImg.src = trashIcon;
+    // trashIconImg.height = "20";
+
+    //Project Listener
+    //defaultProjectButton.appendChild(trashIconImg);
     defaultProjectButton.addEventListener('click', (e) => {
         // dialogForm.reset();
         // When the user clicks the confirm button, close the dialog
@@ -137,29 +139,25 @@ function displayProjectList () {
 function updateProjects (container, position) {
 
     //Create Project Item
-    const projectItem = document.createElement("button");
+    const projectItem = document.createElement("div");
     projectItem.setAttribute("class", "projDiv");
     projectItem.setAttribute("id", "projID_" + position);
-
-    const projectItemText = document.createElement("p");
-
-    projectItemText.textContent = projectList[position].title;
-
-    projectItem.appendChild(projectItemText);
     
-    const trashIconImg = document.createElement("img");
-    trashIconImg.src = trashIcon;
-    trashIconImg.height = "20";
+
+    const projectItemBtn = document.createElement("button");
+    projectItemBtn.setAttribute("class", "projSelfBtn");
+    projectItemBtn.setAttribute("id", "projID_" + position + "_btn");
+    projectItemBtn.textContent = projectList[position].title;
+
+    projectItem.appendChild(projectItemBtn);
     
-    projectItem.appendChild(trashIconImg);
+
     container.appendChild(projectItem);
 
     selectedProjectID = position;
 
     //Create Self Selection Button
-    
-
-    projectItem.addEventListener('click', (e) => {
+    projectItemBtn.addEventListener('click', (e) => {
         // dialogForm.reset();
         // When the user clicks the confirm button, close the dialog
         const currentButton = e.currentTarget.id;
@@ -168,7 +166,60 @@ function updateProjects (container, position) {
         switchProject(currentButtonID);
         e.preventDefault();
     });
-    projectList[selectedProjectID].selfBtn = projectItem;
+    projectList[selectedProjectID].selfBtn = projectItemBtn;
+
+
+    const trashIconImg = document.createElement("img");
+    trashIconImg.src = trashIcon;
+    trashIconImg.height = "20";
+    
+    projectItem.appendChild(trashIconImg);
+
+    trashIconImg.setAttribute("class", "projDelBtn");
+    trashIconImg.setAttribute("id", "projID_" + selectedProjectID + "_del");
+
+    projectList[selectedProjectID].delBtn = trashIconImg;
+
+    trashIconImg.addEventListener('click', (e) => {
+        if (confirm("Are you sure you want to remove this project?") == true) {
+            const chosenButton = e.currentTarget.id;
+            const chosenButtonID = chosenButton.split('_')[1];
+
+            let projToRemoveID = "#projID_" + chosenButtonID;
+            let projToRemove = document.querySelector(projToRemoveID);
+            container.removeChild(projToRemove);
+            console.log ("Delete this project " + chosenButtonID);
+
+            projectList.splice(chosenButtonID,1);
+
+            let projDivs = document.querySelectorAll(".projDiv");
+            let projSelfBtns = document.querySelectorAll(".projSelfBtn");
+            let projDelBtns = document.querySelectorAll(".projDelBtn");
+            
+
+            for (let k = 1; k < projectList.length; k++)
+            {
+                projDivs[k].setAttribute("id", "projID_" + k);
+                projSelfBtns[k-1].setAttribute("id", "projID_" + k + "_btn");
+                projDelBtns[k-1].setAttribute("id", "projID_" + k + "_del");
+            }
+
+
+            if (selectedProjectID > chosenButtonID)
+                selectedProjectID = selectedProjectID - 1;
+
+            else if (selectedProjectID == chosenButtonID) {
+                console.log ("SAME PROJECT");
+                selectedProjectID = 0;
+                switchProject(selectedProjectID);
+            }
+                
+            console.log(projectList);
+        }
+        
+        e.preventDefault();
+    });
+
 
     console.log(projectList[position]);
 
