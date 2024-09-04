@@ -1,5 +1,7 @@
 //import icon from "./icon.jpg";
 import {projectList, selectedProjectID} from "./projectList.js";
+import trashIcon from "./trash.svg";
+import editIcon from "./edit.svg";
 
 
 /*****
@@ -10,8 +12,10 @@ import {projectList, selectedProjectID} from "./projectList.js";
 function mainpage () {
     const content = document.querySelector(".main-page");
     let currentProject = projectList[selectedProjectID];
+    console.log(projectList + currentProject + selectedProjectID);
     displayProjectHeader (content, currentProject);
     displayToDoItems (content, currentProject); 
+
 }
 
 function createToDo (title, description, priority, editBtn, delBtn, checkmark, status) {
@@ -46,7 +50,7 @@ function addToDo(currentProject, container) {
     else 
     {   
         if (taskDescription < 1)
-            taskDescription = "_";
+            taskDescription = "";
 
         currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
             undefined, undefined, undefined, false));
@@ -74,7 +78,7 @@ function editToDo(currentProject, container, position) {
     else 
     {   
         if (taskDescription < 1)
-            taskDescription = "_";
+            taskDescription = "";
 
         currentProject.toDoItems[position].editItem(taskTitle, taskDescription, priorityLevel);
         console.log("UPDATED");
@@ -85,18 +89,51 @@ function editToDo(currentProject, container, position) {
 /****
  * These functions display the project header and the to-do-list frame
  */
+
+function saveText(inputElement, currentProject) {
+    const text = inputElement.value;
+    console.log("Saved Project Info!");
+
+}
+
 function displayProjectHeader (content, currentProject) {
     const projectHeader = document.createElement("div");
     content.appendChild(projectHeader);
     
-    const projectTitle = document.createElement("div");
-    projectTitle.setAttribute("class","proj-title");
+    const projectTitle = document.createElement("input");
+    projectTitle.setAttribute("id","proj-title");
+    projectTitle.setAttribute("type","text");
+    projectTitle.setAttribute("autocomplete","off");
+
+   
+
+
+    projectTitle.addEventListener('change', function (e) {
+        saveText(projectTitle, currentProject);
+            currentProject.title = projectTitle.value;
+            const currentProjectTitle = document.querySelector("#projID_" + selectedProjectID + " p");
+            currentProjectTitle.textContent = projectTitle.value;
+            projectTitle.blur();
+            e.preventDefault();
+    });
     
-    const projectDescription = document.createElement("div");
-    projectDescription.setAttribute("class","proj-desc");
+    const projectDescription = document.createElement("textarea");
+    projectDescription.setAttribute("id","proj-desc");
+    projectDescription.setAttribute("autocomplete","off");
+    projectDescription.setAttribute("placeholder","Add a description...");
+    projectDescription.setAttribute("rows","4");
+
+
+
+    projectDescription.addEventListener('change', function(e) {
+            currentProject.description = projectDescription.value;
+            projectDescription.blur();
+            e.preventDefault();
+        });
+
     
-    projectTitle.textContent = currentProject.title;
-    projectDescription.textContent = currentProject.description;
+    projectTitle.value = currentProject.title;
+    projectDescription.value = currentProject.description;
     projectHeader.appendChild(projectTitle);
     projectHeader.appendChild(projectDescription);
   
@@ -149,24 +186,24 @@ function displayToDoItems (content, currentProject) {
     {
         console.log(currentProject.title);
         updateToDoItems(currentProject, toDoContainer, k);
+
     }
+
+
 
 }
 
-function setCollapsible () {
-    let coll = document.querySelectorAll(".task-title-div");
+function setCollapsible (collapsibleDiv) {
+    collapsibleDiv.addEventListener("click", function() {
+        this.classList.toggle("active");
+        const content = this.nextElementSibling;
+        if (content.style.display === 'block'){
+            content.style.display = 'none';
+        } else {
+            content.style.display = 'block';
+        } 
+    });
 
-    for (let i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            const content = this.nextElementSibling;
-            if (content.style.display === 'block'){
-                content.style.display = 'none';
-            } else {
-                content.style.display = 'block';
-            } 
-        });
-    }
 }
 
 function updateToDoItems (currentProject, container, position) {
@@ -178,10 +215,22 @@ function updateToDoItems (currentProject, container, position) {
     container.appendChild(toDoItem);
 
     //Create STATIC elements
-    const toDoTitle = document.createElement("div");
+    const toDoTitle = document.createElement("button");
     toDoTitle.setAttribute("class", "to-do-title");
-    const toDoDescription = document.createElement("div");
+    const toDoDescription = document.createElement("textarea");
     toDoDescription.setAttribute("class", "to-do-desc");
+    toDoDescription.setAttribute("autocomplete","off");
+    toDoDescription.setAttribute("rows","4");
+    toDoDescription.setAttribute("placeholder", "Add some notes for this task...");
+    
+
+    toDoDescription.addEventListener('change', function(e) {
+        currentProject.toDoItems[position].description = toDoDescription.value;
+        toDoDescription.blur();
+        e.preventDefault();
+    });
+
+
     const priorityLevel = document.createElement("div");
     priorityLevel.setAttribute("class", "prio-flag");
 
@@ -192,7 +241,7 @@ function updateToDoItems (currentProject, container, position) {
 
     //Create FUNCTIONAL elements
     //create status element
-    const titleDiv = document.createElement("button");
+    const titleDiv = document.createElement("div");
     titleDiv.setAttribute("class","task-title-div");
     //statusDiv.textContent = "Complete?";
 
@@ -204,12 +253,14 @@ function updateToDoItems (currentProject, container, position) {
     status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
     status.checked = currentProject.toDoItems[position].status;
     if (status.checked)
+    {
         toDoItem.style.backgroundColor = "#a9f7c7";
+    }
 
     currentProject.toDoItems[position].checkmark = status;
 
 
-    titleDiv.appendChild(status);
+  
 
     //Checkbox listener for status
     status.addEventListener("change", function(e) {
@@ -219,8 +270,10 @@ function updateToDoItems (currentProject, container, position) {
         if (e.target.checked) {
             toDoItem.style.backgroundColor = "#a9f7c7";
             currentProject.toDoItems[currentCheckID].status = true;
+            toDoTitle.style.backgroundColor = "#a9f7c7";
         } else {
             toDoItem.style.backgroundColor = "";
+            toDoTitle.style.backgroundColor = "";
             currentProject.toDoItems[currentCheckID].status = false;
         }
 
@@ -232,8 +285,9 @@ function updateToDoItems (currentProject, container, position) {
     const editDelDiv = document.createElement("div");
     editDelDiv.setAttribute("class", "edit-del-div");
 
-    
-    const editBtn = document.createElement("button");
+    const editBtn = document.createElement("img");
+    editBtn.src = editIcon;
+    editBtn.height = "25";
     editBtn.setAttribute("class", "editBtn");
     editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + position);
 
@@ -280,8 +334,9 @@ function updateToDoItems (currentProject, container, position) {
 
 
 
-
-    const delBtn = document.createElement("button");
+    const delBtn = document.createElement("img");
+    delBtn.src = trashIcon;
+    delBtn.height = "25";
     delBtn.setAttribute("class", "delBtn");
     delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + position);
 
@@ -303,14 +358,14 @@ function updateToDoItems (currentProject, container, position) {
             let taskDivs = document.querySelectorAll(".taskDiv");
             let editBtns = document.querySelectorAll(".editBtn");
             let delBtns = document.querySelectorAll(".delBtn");
-            let statusCheckmarks = document.querySelectorAll(".statusInput");
+            let statusCheckmarks = document.querySelectorAll(".status-input");
 
             for (let k = 0; k < currentProject.toDoItems.length; k++)
             {
                 taskDivs[k].setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + k);
                 editBtns[k].setAttribute("id", "projID_" + selectedProjectID + "_editID_" + k);
                 delBtns[k].setAttribute("id", "projID_" + selectedProjectID + "_delID_" + k);
-                statusCheckmarks[k].setAttribute("projID_" + selectedProjectID + "_id", "statusID_" + k);
+                statusCheckmarks[k].setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + k);
             }
 
             console.log(currentProject.toDoItems);
@@ -320,21 +375,19 @@ function updateToDoItems (currentProject, container, position) {
 
 
     //Append all items
-
+    toDoItem.appendChild(status)
     toDoItem.appendChild(titleDiv);
     titleDiv.appendChild(toDoTitle);
-    titleDiv.appendChild(priorityLevel);
-    titleDiv.appendChild(editDelDiv);
+    titleDiv.appendChild(toDoDescription);
+    toDoItem.appendChild(priorityLevel);
+    toDoItem.appendChild(editDelDiv);
 
-    toDoItem.appendChild(toDoDescription);
-
-
-
+    setCollapsible(toDoTitle);
     console.log(currentProject.toDoItems);
 
-    setCollapsible();
 
 }
+
 
 
 

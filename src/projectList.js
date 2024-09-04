@@ -56,7 +56,7 @@ function newProject(container) {
 //This function SWITCHES to a project
 function switchProject(projectID) {
     console.log("SWITCHING PROJECTS");
-    console.log(projectList);
+
     selectedProjectID = projectID;
     const content = document.querySelector(".main-page");
     content.innerHTML = "";
@@ -108,8 +108,10 @@ function displayProjectList () {
     const defaultProjectButton = document.createElement("button");
     defaultProjectButton.setAttribute("class", "projDiv");
     defaultProjectButton.setAttribute("id", "projID_" + 0);
+    const defaultProjectBtnText = document.createElement("p");
 
-    defaultProjectButton.textContent = defaultProject.title;
+    defaultProjectBtnText.textContent = defaultProject.title;
+    defaultProjectButton.appendChild(defaultProjectBtnText);
     projectListContainer.appendChild(defaultProjectButton);
     
 
@@ -120,9 +122,8 @@ function displayProjectList () {
     defaultProjectButton.addEventListener('click', (e) => {
         // dialogForm.reset();
         // When the user clicks the confirm button, close the dialog
-        const currentButton = e.target.id;
+        const currentButton = e.currentTarget.id;
         const currentButtonID = currentButton.split('_')[1];
-        
         switchProject(currentButtonID);
         e.preventDefault();
     });
@@ -139,8 +140,12 @@ function updateProjects (container, position) {
     const projectItem = document.createElement("button");
     projectItem.setAttribute("class", "projDiv");
     projectItem.setAttribute("id", "projID_" + position);
-       
-    projectItem.textContent = projectList[position].title;
+
+    const projectItemText = document.createElement("p");
+
+    projectItemText.textContent = projectList[position].title;
+
+    projectItem.appendChild(projectItemText);
     
     const trashIconImg = document.createElement("img");
     trashIconImg.src = trashIcon;
@@ -157,7 +162,7 @@ function updateProjects (container, position) {
     projectItem.addEventListener('click', (e) => {
         // dialogForm.reset();
         // When the user clicks the confirm button, close the dialog
-        const currentButton = e.target.id;
+        const currentButton = e.currentTarget.id;
         const currentButtonID = currentButton.split('_')[1];
         
         switchProject(currentButtonID);

@@ -4,23 +4,26 @@
 }
 
 div {
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 body {
-    background-color:beige;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    height: 100vh;
-    font-family: "Lato", sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 
-
+.container {
+  background-color:beige;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  
+  height: 100vh;
+}
 .sidebar {
     background-color: rgb(250, 218, 176);
     display: grid;
     grid-template-rows: 300px 1fr;
+
 }
 
 .main-page {
@@ -97,6 +100,10 @@ input[type="number"] {
     width: 50px;
 }
 
+#projDescription, #taskDescription {
+  resize: none;
+}
+
 /**************** Project List ************/
 .add-project-btn {
   font-size: 1.5rem;
@@ -126,15 +133,28 @@ input[type="number"] {
   margin: 5px;
 }
 
-.proj-title {
+#proj-title {
   font-size: 3rem;
   margin: 5px;
+  padding-left: 10px;
+  background-color:beige;
+  border: none;
+  width: calc(100% - 50px);
+  min-width: 200px;
 
 }
 
-.proj-desc {
+#proj-desc {
   font-size: 1rem;
+  font-family: "Lato", sans-serif;
   margin: 5px;
+  padding-left: 20px;
+  background-color:beige;
+  width: calc(100% - 50px);
+  border: none;
+  resize: none;
+  min-width: 200px;
+  
 }
 
 /* To do container */
@@ -144,7 +164,8 @@ input[type="number"] {
   background-color:bisque;
   padding: 5px 25px;
   border-radius: 12px;
-  margin: 5px 5px 5px calc(100vw - 800px);
+  align-self: flex-end;
+  margin: 25px 80px 5px 5px;
   
 }
 .to-do-container {
@@ -152,56 +173,78 @@ input[type="number"] {
   flex-direction: column;
   gap: 10px;
   align-items: center;
+  border-top: 1px solid gray;
+ 
 }
 
 .taskDiv {
-  padding: 5px;
-  margin: 5px;
+  padding: 15px;
+  margin: 5px 30px;
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   gap: 5px;
+  min-width: 500px;
+  width: calc(100% - 200px);
   background-color:bisque;
-  width: 500px;
+  border-radius: 15px;
 }
 
 .task-title-div {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
-  gap: 5px;
   margin: 5px;
   width: 99%;
+  background-color:bisque;
 }
 
 
 
 .prio-flag {
-  margin-left: auto;
+  margin: 10px auto 0 0;
+  
 }
 
 .status-input {
   transform: scale(1.5);
-  margin: 5px;
+  margin: 20px 0 15px 5px;
 }
 
 .edit-del-div {
   display: flex;
   justify-content: space-around;
+  margin: 15px 0 0 0;
     
 }
 
-.active, .task-title-div:hover {
-  background-color: #555;
+.active, .to-do-title:hover {
+  background-color: beige;
 }
 
+.to-do-title {
+  margin: 0;
+  padding: 5px;
+  width: 100%;
+  background-color:bisque;
+  text-align: left;
+  border: none;
+}
+
+
 .to-do-desc {
-  padding: 0 18px;
+  padding: 5px;
+  margin: 0;
   display: none;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
-  background-color: #f1f1f1;
+  background-color: rgb(255, 242, 226);
+  min-height: 3rem;
+  width: calc(100% - 10px);
+  resize: vertical;
+  border: none;
+
 }
 
 

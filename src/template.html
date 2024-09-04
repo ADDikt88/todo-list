@@ -19,7 +19,7 @@
             </div>
             <div class="inputs">
                 <label for="taskDescription">Description: </label>
-                <input type="text" id="taskDescription" placeholder=" " minlength = 1>
+                <textarea id="taskDescription" placeholder=" " minlength = 1></textarea>
             </div>
             <div class="inputs">
                 <p> Priority Level?
@@ -49,7 +49,7 @@
             </div>
             <div class="inputs">
                 <label for="projDescription">Description: </label>
-                <input type="text" id="projDescription" placeholder=" " minlength = 1>
+                <textarea id="projDescription" placeholder=" " minlength = 1 resize = "none"></textarea>
             </div>
             <div style="margin-top: 20px; text-align: right;">
                 <button id="projCloseDialogBtn" style="padding: 2px 5px;">Cancel</button>
@@ -60,9 +60,11 @@
 </dialog>
 
 <body>
-    <div class="sidebar">
-    </div>
-    <div class="main-page">
+    <div class="container">
+        <div class="sidebar">
+        </div>
+        <div class="main-page">
+        </div>
     </div>
 </body>
 </html>
