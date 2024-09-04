@@ -109,8 +109,9 @@ function displayToDoItems (content, currentProject) {
     
 
     const addToDoItemBtn = document.createElement("button");
+    addToDoItemBtn.setAttribute("class", "add-to-do-btn");
     toDoContainer.appendChild(addToDoItemBtn);
-    addToDoItemBtn.textContent = "Add Task";
+    addToDoItemBtn.textContent = "Add Task +";
     
     const dialogForm = document.querySelector("#addActionForm");
     const dialog = document.querySelector("#addItemDialog");
@@ -152,6 +153,21 @@ function displayToDoItems (content, currentProject) {
 
 }
 
+function setCollapsible () {
+    let coll = document.querySelectorAll(".task-title-div");
+
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            const content = this.nextElementSibling;
+            if (content.style.display === 'block'){
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            } 
+        });
+    }
+}
 
 function updateToDoItems (currentProject, container, position) {
 
@@ -163,8 +179,11 @@ function updateToDoItems (currentProject, container, position) {
 
     //Create STATIC elements
     const toDoTitle = document.createElement("div");
+    toDoTitle.setAttribute("class", "to-do-title");
     const toDoDescription = document.createElement("div");
+    toDoDescription.setAttribute("class", "to-do-desc");
     const priorityLevel = document.createElement("div");
+    priorityLevel.setAttribute("class", "prio-flag");
 
     toDoTitle.textContent = currentProject.toDoItems[position].title;
     toDoTitle.style.fontSize = "1.5rem";
@@ -173,7 +192,7 @@ function updateToDoItems (currentProject, container, position) {
 
     //Create FUNCTIONAL elements
     //create status element
-    const titleDiv = document.createElement("div");
+    const titleDiv = document.createElement("button");
     titleDiv.setAttribute("class","task-title-div");
     //statusDiv.textContent = "Complete?";
 
@@ -304,15 +323,19 @@ function updateToDoItems (currentProject, container, position) {
 
     toDoItem.appendChild(titleDiv);
     titleDiv.appendChild(toDoTitle);
+    titleDiv.appendChild(priorityLevel);
+    titleDiv.appendChild(editDelDiv);
+
     toDoItem.appendChild(toDoDescription);
-    toDoItem.appendChild(priorityLevel);
-    toDoItem.appendChild(editDelDiv);
 
 
 
     console.log(currentProject.toDoItems);
 
+    setCollapsible();
+
 }
+
 
 
 export {mainpage, displayProjectHeader, displayToDoItems};

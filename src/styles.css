@@ -12,6 +12,7 @@ body {
     display: grid;
     grid-template-columns: 300px 1fr;
     height: 100vh;
+    font-family: "Lato", sans-serif;
 }
 
 
@@ -96,37 +97,73 @@ input[type="number"] {
     width: 50px;
 }
 
-/* Project List */
+/**************** Project List ************/
+.add-project-btn {
+  font-size: 1.5rem;
+  background-color:rgb(255, 240, 220);
+  padding: 5px;
+  border-radius: 12px;
+  margin: 10px 5px 5px 5px;
+}
+
 .project-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  
 }
 
 .projDiv {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 10px;
+
+  font-size: 1.5rem;
+  background-color:bisque;
+  padding: 5px;
+  border-radius: 12px;
+  margin: 5px;
 }
 
 .proj-title {
   font-size: 3rem;
+  margin: 5px;
+
 }
 
 .proj-desc {
   font-size: 1rem;
+  margin: 5px;
 }
 
 /* To do container */
+
+.add-to-do-btn {
+  font-size: 1.5rem;
+  background-color:bisque;
+  padding: 5px 25px;
+  border-radius: 12px;
+  margin: 5px 5px 5px calc(100vw - 800px);
+  
+}
 .to-do-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: center;
 }
 
 .taskDiv {
   padding: 5px;
   margin: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 5px;
+  background-color:bisque;
+  width: 500px;
 }
 
 .task-title-div {
@@ -134,6 +171,14 @@ input[type="number"] {
   align-items: center;
   justify-content: flex-start;
   gap: 5px;
+  margin: 5px;
+  width: 99%;
+}
+
+
+
+.prio-flag {
+  margin-left: auto;
 }
 
 .status-input {
@@ -144,4 +189,80 @@ input[type="number"] {
 .edit-del-div {
   display: flex;
   justify-content: space-around;
+    
+}
+
+.active, .task-title-div:hover {
+  background-color: #555;
+}
+
+.to-do-desc {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+
+
+
+/** Fonts **/
+.lato-thin {
+  font-family: "Lato", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.lato-light {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.lato-regular {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.lato-bold {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.lato-black {
+  font-family: "Lato", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.lato-thin-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.lato-light-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.lato-regular-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.lato-bold-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.lato-black-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 900;
+  font-style: italic;
 }

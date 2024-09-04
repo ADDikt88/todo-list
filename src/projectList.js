@@ -70,8 +70,9 @@ function displayProjectList () {
     projectListContainer.setAttribute("class", "project-list");
 
     const addProjectBtn = document.createElement("button");
+    addProjectBtn.setAttribute("class","add-project-btn");
     projectListContainer.appendChild(addProjectBtn);
-    addProjectBtn.textContent = "Add Project";
+    addProjectBtn.textContent = "Add Project +";
     
     const dialogForm = document.querySelector("#addProjectForm");
     const dialog = document.querySelector("#addProjectDialog");
