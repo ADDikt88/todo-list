@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 div {
@@ -15,6 +16,7 @@ body {
 .container {
   background-color:beige;
   display: grid;
+  text-align: center;
   grid-template-columns: 300px 1fr;
   
   height: 100vh;
@@ -29,6 +31,8 @@ body {
 .main-page {
     display: grid;
     grid-template-rows: 150px 1fr;
+    background-color:beige;
+
 }
 
 /**** Dialog Styling ****/
@@ -103,7 +107,7 @@ dialog[open]::backdrop {
   background-color:rgb(255, 240, 220);
   padding: 5px;
   border-radius: 12px;
-  margin: 10px 5px 5px 5px;
+  margin: 10px;
 }
 
 .project-list {
@@ -123,7 +127,7 @@ dialog[open]::backdrop {
   background-color:bisque;
   padding: 5px;
   border-radius: 12px;
-  margin: 5px;
+  margin: 10px;
   border: 1px solid black;
 }
 
@@ -227,29 +231,26 @@ dialog[open]::backdrop {
 }
 
 
-
-
-
 .due-date {
   min-width: 100px;
-  margin: 18px auto 0 0;
+  margin: 16px auto 0 0;
   text-align: right;
 }
 
 .prio-flag {
-  margin: 17px 0 0 0;
+  margin: 15px 0 0 0;
   
 }
 
 .status-input {
   transform: scale(1.5);
-  margin: 20px 0 15px 5px;
+  margin: 18px 0 15px 5px;
 }
 
 .edit-del-div {
   display: flex;
   justify-content: space-around;
-  margin: 15px 0 0 0;
+  margin: 12px 0 0 0;
     
 }
 
@@ -283,7 +284,7 @@ dialog[open]::backdrop {
   transition: max-height 0.2s ease-out;
   background-color: rgb(255, 242, 226);
   min-height: 3rem;
-  width: calc(100% - 10px);
+  width: 100%;
   resize: vertical;
   border: none;
 
