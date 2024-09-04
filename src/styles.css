@@ -84,21 +84,14 @@ dialog[open]::backdrop {
 }
 
 .inputs {
-    display: flex;
+    display: grid;
+    grid-template-columns: 100px 1fr;
     justify-content: flex-start;
-    align-items: center;
-    gap: 5px;
+    align-items: flex-start;
+    margin: 5px;
+    gap: 10px;
 }
 
-input {
-    width: 100%;    
-}
-
-input[type="number"] {
-    margin-right: 0;
-    margin-left: auto;
-    width: 50px;
-}
 
 #projDescription, #taskDescription {
   resize: none;
@@ -235,8 +228,16 @@ input[type="number"] {
 
 
 
+
+
+.due-date {
+  min-width: 100px;
+  margin: 18px auto 0 0;
+  text-align: right;
+}
+
 .prio-flag {
-  margin: 10px auto 0 0;
+  margin: 17px 0 0 0;
   
 }
 

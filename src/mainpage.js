@@ -2,6 +2,8 @@
 import {projectList, selectedProjectID} from "./projectList.js";
 import trashIcon from "./trash.svg";
 import editIcon from "./edit.svg";
+import { compareAsc, format } from "date-fns";
+//format(new Date(2014,1,11), "yyyy-MM-dd");
 
 
 /*****
@@ -16,19 +18,21 @@ function mainpage () {
     console.log(projectList + currentProject + selectedProjectID);
     displayProjectHeader (content, currentProject);
     displayToDoItems (content, currentProject); 
+    console.log(format(new Date(), "yyyy-MM-dd"));
 
 }
 
-function createToDo (title, description, priority, editBtn, delBtn, checkmark, status) {
+function createToDo (title, description, priority, editBtn, delBtn, checkmark, dueDate, status) {
 
-    function editItem (newTitle, newDesc, newPriority) {
+    function editItem (newTitle, newDesc, newPriority, newDueDate) {
         this.title = newTitle;
         this.description = newDesc;
         this.priority = newPriority;
+        this.dueDate = newDueDate
     }
 
     return {
-        title, description, priority, status, editItem, editBtn, delBtn, checkmark,
+        title, description, priority, status, editItem, editBtn, delBtn, dueDate, checkmark,
     }
 
 }
@@ -39,8 +43,10 @@ function addToDo(currentProject, container) {
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
     let priorityLevel = document.querySelector("#priorityLevel").value;
+    let dueDate = document.querySelector("#dueDateInput").value;
 
     console.log(currentProject.title);
+    console.log(dueDate);
     if (taskTitle < 1)
     {
         alert("Please enter a new task title");
@@ -54,7 +60,7 @@ function addToDo(currentProject, container) {
             taskDescription = "";
 
         currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-            undefined, undefined, undefined, false));
+            undefined, undefined, undefined, dueDate, false));
         console.log("UPDATED");
         const position = currentProject.toDoItems.length - 1;
         updateToDoItems (currentProject, container, position);
@@ -69,6 +75,7 @@ function editToDo(currentProject, container, position) {
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
     let priorityLevel = document.querySelector("#priorityLevel").value;
+    let dueDate = document.querySelector("#dueDateInput").value;
     
     if (taskTitle < 1)
     {
@@ -81,7 +88,7 @@ function editToDo(currentProject, container, position) {
         if (taskDescription < 1)
             taskDescription = "";
 
-        currentProject.toDoItems[position].editItem(taskTitle, taskDescription, priorityLevel);
+        currentProject.toDoItems[position].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
         console.log("UPDATED");
         return true;
     }
@@ -235,10 +242,16 @@ function updateToDoItems (currentProject, container, position) {
     const priorityLevel = document.createElement("div");
     priorityLevel.setAttribute("class", "prio-flag");
 
+    const dueDate = document.createElement("div");
+    dueDate.setAttribute("class", "due-date");
+
     toDoTitle.textContent = currentProject.toDoItems[position].title;
     toDoTitle.style.fontSize = "1.5rem";
     toDoDescription.textContent = currentProject.toDoItems[position].description;
     priorityLevel.textContent = currentProject.toDoItems[position].priority;
+    dueDate.textContent = currentProject.toDoItems[position].dueDate;
+
+
 
     //Create FUNCTIONAL elements
     //create status element
@@ -256,6 +269,7 @@ function updateToDoItems (currentProject, container, position) {
     if (status.checked)
     {
         toDoItem.style.backgroundColor = "#a9f7c7";
+        toDoTitle.style.backgroundColor = "#a9f7c7";
     }
 
     currentProject.toDoItems[position].checkmark = status;
@@ -309,6 +323,7 @@ function updateToDoItems (currentProject, container, position) {
         document.querySelector("#taskTitle").value = currentProject.toDoItems[currentButtonID].title;
         document.querySelector("#taskDescription").value = currentProject.toDoItems[currentButtonID].description;
         document.querySelector("#priorityLevel").value = currentProject.toDoItems[currentButtonID].priority;
+        document.querySelector("#dueDateInput").value = currentProject.toDoItems[currentButtonID].dueDate;
         
         confirmBtn.onclick = function(e) {
             //add an item function
@@ -318,6 +333,7 @@ function updateToDoItems (currentProject, container, position) {
                 toDoTitle.textContent = currentProject.toDoItems[currentButtonID].title;
                 toDoDescription.textContent = currentProject.toDoItems[currentButtonID].description;
                 priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
+                dueDate.textContent = currentProject.toDoItems[currentButtonID].dueDate;
             }
                 
             e.preventDefault();
@@ -380,6 +396,7 @@ function updateToDoItems (currentProject, container, position) {
     toDoItem.appendChild(titleDiv);
     titleDiv.appendChild(toDoTitle);
     titleDiv.appendChild(toDoDescription);
+    toDoItem.appendChild(dueDate);
     toDoItem.appendChild(priorityLevel);
     toDoItem.appendChild(editDelDiv);
 
