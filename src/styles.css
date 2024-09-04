@@ -95,3 +95,53 @@ input[type="number"] {
     margin-left: auto;
     width: 50px;
 }
+
+/* Project List */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.projDiv {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.proj-title {
+  font-size: 3rem;
+}
+
+.proj-desc {
+  font-size: 1rem;
+}
+
+/* To do container */
+.to-do-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.taskDiv {
+  padding: 5px;
+  margin: 5px;
+}
+
+.task-title-div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.status-input {
+  transform: scale(1.5);
+  margin: 5px;
+}
+
+.edit-del-div {
+  display: flex;
+  justify-content: space-around;
+}

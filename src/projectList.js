@@ -68,9 +68,6 @@ function displayProjectList () {
     
     const projectListContainer = document.createElement("div");
     projectListContainer.setAttribute("class", "project-list");
-    projectListContainer.style.display = "flex";
-    projectListContainer.style.flexDirection = "column";
-    projectListContainer.style.gap = "10px";
 
     const addProjectBtn = document.createElement("button");
     projectListContainer.appendChild(addProjectBtn);
@@ -112,9 +109,6 @@ function displayProjectList () {
     defaultProjectButton.setAttribute("id", "projID_" + 0);
 
     defaultProjectButton.textContent = defaultProject.title;
-    defaultProjectButton.style.display = "flex";
-    defaultProjectButton.style.justifyContent = "center";
-    defaultProjectButton.style.gap = "10px";
     projectListContainer.appendChild(defaultProjectButton);
     
 
@@ -146,9 +140,6 @@ function updateProjects (container, position) {
     projectItem.setAttribute("id", "projID_" + position);
        
     projectItem.textContent = projectList[position].title;
-    projectItem.style.display = "flex";
-    projectItem.style.justifyContent = "center";
-    projectItem.style.gap = "10px";
     
     const trashIconImg = document.createElement("img");
     trashIconImg.src = trashIcon;

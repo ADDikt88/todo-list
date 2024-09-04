@@ -90,8 +90,10 @@ function displayProjectHeader (content, currentProject) {
     content.appendChild(projectHeader);
     
     const projectTitle = document.createElement("div");
-    projectTitle.style.fontSize = "3rem";
+    projectTitle.setAttribute("class","proj-title");
+    
     const projectDescription = document.createElement("div");
+    projectDescription.setAttribute("class","proj-desc");
     
     projectTitle.textContent = currentProject.title;
     projectDescription.textContent = currentProject.description;
@@ -103,9 +105,6 @@ function displayProjectHeader (content, currentProject) {
 function displayToDoItems (content, currentProject) {
     const toDoContainer = document.createElement("div");
     toDoContainer.setAttribute("class", "to-do-container");
-    toDoContainer.style.display = "flex";
-    toDoContainer.style.flexDirection = "column";
-    toDoContainer.style.gap = "10px";
     content.appendChild(toDoContainer);
     
 
@@ -160,8 +159,6 @@ function updateToDoItems (currentProject, container, position) {
     const toDoItem = document.createElement("div");
     toDoItem.setAttribute("class", "taskDiv");
     toDoItem.setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + position);
-    toDoItem.style.padding = "5px";
-    toDoItem.style.margin = "5px";
     container.appendChild(toDoItem);
 
     //Create STATIC elements
@@ -177,16 +174,14 @@ function updateToDoItems (currentProject, container, position) {
     //Create FUNCTIONAL elements
     //create status element
     const titleDiv = document.createElement("div");
+    titleDiv.setAttribute("class","task-title-div");
     //statusDiv.textContent = "Complete?";
-    titleDiv.style.display = "flex";
-    titleDiv.style.alignItems = "center";
-    titleDiv.style.justifyContent = "flex-start";
-    titleDiv.style.gap = "5px";
+
     
     const status = document.createElement("input");
     status.style.width = "auto";
     status.setAttribute("type", "checkbox");
-    status.setAttribute("class", "statusInput");
+    status.setAttribute("class", "status-input");
     status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
     status.checked = currentProject.toDoItems[position].status;
     if (status.checked)
@@ -195,9 +190,6 @@ function updateToDoItems (currentProject, container, position) {
     currentProject.toDoItems[position].checkmark = status;
 
 
-
-    status.style.transform = "scale(1.5)";
-    status.style.margin = "5px";
     titleDiv.appendChild(status);
 
     //Checkbox listener for status
@@ -219,8 +211,8 @@ function updateToDoItems (currentProject, container, position) {
 
     //create edit/delete element
     const editDelDiv = document.createElement("div");
-    editDelDiv.style.display = "flex";
-    editDelDiv.style.justifyContent = "space-around";
+    editDelDiv.setAttribute("class", "edit-del-div");
+
     
     const editBtn = document.createElement("button");
     editBtn.setAttribute("class", "editBtn");
