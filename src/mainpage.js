@@ -182,7 +182,7 @@ function editToDo(currentProject, container, position) {
 };
 
 
-function updateToDoItems (currentProject, container, position) {
+function updateToDoItems (currentProject, container, position, taskItem) {
 
     //Create Task Item
     const toDoItem = document.createElement("div");
@@ -199,13 +199,13 @@ function updateToDoItems (currentProject, container, position) {
     toDoDescription.setAttribute("autocomplete","off");
     toDoDescription.setAttribute("rows","4");
     toDoDescription.setAttribute("placeholder", "Add some notes for this task...");
-    setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
+    setPriorityBorder(taskItem.priority, toDoItem);
 
     if (selectedProjectID == 1 || selectedProjectID == 2) {
         toDoDescription.disabled = true;
     }
     toDoDescription.addEventListener('change', function(e) {
-        currentProject.toDoItems[position].description = toDoDescription.value;
+        taskItem.description = toDoDescription.value;
 
         if (selectedProjectID > 2) {
             //Update all tasks
@@ -225,8 +225,8 @@ function updateToDoItems (currentProject, container, position) {
     
         if (selectedProjectID == 0) {
     
-            const targetProjID = projectList[0].toDoItems[position].projID;
-            const masterTaskID = projectList[0].toDoItems[position].taskID;
+            const targetProjID = taskItem.projID;
+            const masterTaskID = taskItem.taskID;
     
             //projectList[targetProjID].toDoItems[targetTaskID].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
     
@@ -248,12 +248,12 @@ function updateToDoItems (currentProject, container, position) {
     
 
     
-    toDoTitle.textContent = currentProject.toDoItems[position].title;
+    toDoTitle.textContent = taskItem.title;
     toDoTitle.style.fontSize = "1.5rem";
-    toDoDescription.textContent = currentProject.toDoItems[position].description;
+    toDoDescription.textContent = taskItem.description;
     
     const dueDate = document.createElement("div");
-    setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
+    setDueDateIcon(taskItem.dueDate, dueDate);
 
     //Create FUNCTIONAL elements
     //create status element
@@ -267,14 +267,14 @@ function updateToDoItems (currentProject, container, position) {
     status.setAttribute("type", "checkbox");
     status.setAttribute("class", "status-input");
     status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
-    status.checked = currentProject.toDoItems[position].status;
+    status.checked = taskItem.status;
     if (status.checked)
     {
         toDoItem.style.backgroundColor = "#a9f7c7";
         toDoTitle.style.backgroundColor = "#a9f7c7";
     }
 
-    currentProject.toDoItems[position].checkmark = status;
+    taskItem.checkmark = status;
 
 
 
@@ -312,7 +312,7 @@ function updateToDoItems (currentProject, container, position) {
     editBtn.setAttribute("class", "editBtn");
     editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + position);
 
-    currentProject.toDoItems[position].editBtn = editBtn;
+    taskItem.editBtn = editBtn;
     
     editBtn.textContent = "Edit";
     editDelDiv.appendChild(editBtn);
@@ -346,8 +346,8 @@ function updateToDoItems (currentProject, container, position) {
                     // toDoDescription.textContent = currentProject.toDoItems[currentButtonID].description;
                     // priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
                     
-                    setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
-                    setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
+                    setPriorityBorder(taskItem.priority, toDoItem);
+                    setDueDateIcon(taskItem.dueDate, dueDate);
                     mainpage();
 
             
@@ -374,7 +374,7 @@ function updateToDoItems (currentProject, container, position) {
     delBtn.setAttribute("class", "delBtn");
     delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + position);
 
-    currentProject.toDoItems[position].delBtn = delBtn;
+    taskItem.delBtn = delBtn;
 
     delBtn.textContent = "Delete";
     editDelDiv.appendChild(delBtn);
@@ -402,7 +402,7 @@ function updateToDoItems (currentProject, container, position) {
     
     const projectName = document.createElement("p")
     projectName.setAttribute("class", "proj-name");
-    projectName.textContent = projectList[currentProject.toDoItems[position].projID].title;
+    projectName.textContent = projectList[taskItem.projID].title;
     toDoTitle.appendChild(projectName);
     toDoItem.appendChild(status)
     toDoItem.appendChild(titleDiv);
@@ -586,7 +586,7 @@ function displayToDoItems (content, currentProject) {
                 console.log("TESTING" + projectList[0].toDoItems);
                 let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
                 if (daysDiff <= 0)
-                    updateToDoItems(projectList[0], toDoContainer, k);             
+                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k]);             
         
             }
     }
@@ -600,7 +600,7 @@ function displayToDoItems (content, currentProject) {
                 console.log("TESTING" + projectList[0].toDoItems);
                 let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
                 if (daysDiff <= 7 && daysDiff >= 1)
-                    updateToDoItems(projectList[0], toDoContainer, k);             
+                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k]);             
         
             }
     }
@@ -609,7 +609,7 @@ function displayToDoItems (content, currentProject) {
         for (let k = 0; k < (currentProject.toDoItems).length; k++)
         {
             console.log("CURRENT WORKING: " + currentProject.title);
-            updateToDoItems(currentProject, toDoContainer, k);    
+            updateToDoItems(currentProject, toDoContainer, k, currentProject.toDoItems[k]);    
         }
     }
 
