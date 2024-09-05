@@ -33,11 +33,12 @@ function mainpage () {
 
 function createToDo (title, description, priority, editBtn, delBtn, checkmark, dueDate, projID, taskID, status) {
 
-    function editItem (newTitle, newDesc, newPriority, newDueDate) {
+    function editItem (newTitle, newDesc, newPriority, newDueDate, newProj) {
         this.title = newTitle;
         this.description = newDesc;
         this.priority = newPriority;
         this.dueDate = newDueDate;
+        this.projID = newProj;
 
 
     }
@@ -129,38 +130,159 @@ function editToDo(currentProject, taskItem, taskID) {
         if (taskDescription < 1)
             taskDescription = "";
 
-        taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate);
         
+        
+        console.log("TASK ITEM VALUE: " + taskItem.projID);
 
         if (selectedProjectID > 2) {
             //Update all tasks
-    
+            taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
+
             //find the proj ID and task ID
             //let counter = 0;
             for (let k = 0; k < (projectList[0].toDoItems).length; k++){
                 if (taskID == projectList[0].toDoItems[k].taskID) {
-                      projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+                      projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
                 } 
             }
+
+            //delete any straggling items in that project
+            for (let j = 0; j < (projectList[selectedProjectID].toDoItems).length; j++) {
+                if (projectList[selectedProjectID].toDoItems[j].projID !== selectedProjectID) {
+                    projectList[selectedProjectID].toDoItems.splice(j,1);
+                }
+            }
+
+            if (newProjSelect > 2) {
+                if (newProjSelect !== selectedProjectID) //add the existing item to the new project
+                    projectList[newProjSelect].toDoItems.push(taskItem);            
+                
+            }
+            
         
         }
     
         if (selectedProjectID < 3) {
     
             const targetProjID = taskItem.projID;
-    
-            //find the proj ID and task ID
-            for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
-                if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
-                    projectList[targetProjID].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+            taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
+            // // find the proj ID and task ID
+            // for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
+            //     if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
+            //         projectList[targetProjID].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
+            //     }
+            // }
+
+            if (targetProjID > 2) {
+                if (newProjSelect > 2) {
+                    if (newProjSelect !== targetProjID) //add the existing item to the new project
+                    {                        
+                        projectList[newProjSelect].toDoItems.push(taskItem); 
+                        //delete any straggling items in that project
+                        for (let j = 0; j < (projectList[targetProjID].toDoItems).length; j++) {
+                            if (projectList[targetProjID].toDoItems[j].projID !== targetProjID) {
+                                projectList[targetProjID].toDoItems.splice(j,1);
+                            }
+                        }
+                    }
+
+                }
+                else if (newProjSelect < 3) {
+                    //delete any straggling items in that project
+                    for (let j = 0; j < (projectList[targetProjID].toDoItems).length; j++) {
+                        if (projectList[targetProjID].toDoItems[j].projID !== targetProjID) {
+                            projectList[targetProjID].toDoItems.splice(j,1);
+                        }
+                    }
+                }
+                       
+                    
+            }
+            else if (targetProjID < 3) {
+                if (newProjSelect > 2) {
+                    projectList[newProjSelect].toDoItems.push(taskItem); 
                 }
             }
         }
+
+        
+        // if (newProjSelect !== taskItem.projID) {
+        //     //change proj id for taskItem
+        //     taskItem.editProjID(newProjID);
+
+        //     //change proj id in base list
+        //     for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+        //         if (taskID == projectList[0].toDoItems[k].taskID) {
+        //             projectList[0].toDoItems[k].editProjID(newProjSelect);
+        //         } 
+        //     }
+        //     //mainpage();
+        // }
+            //changeProject(taskItem.projID, newProjSelect, taskItem, taskID);
 
         //mainpage();
         return true;
     }
 };
+
+function changeProject (currentProjID, newProjID, taskItem, taskID) {
+    //3 cases
+    if (selectedProjectID > 2) {
+        //selectedProj = currentProjID
+        //switching to a built project
+        if (newProjID > 2) {
+            //change proj id for taskItem
+            taskItem.editProjID(newProjID);
+
+            //change proj id in base list
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (taskID == projectList[0].toDoItems[k].taskID) {
+                      projectList[0].toDoItems[k].editProjID(newProjID);
+                } 
+            }
+        }
+        //putting task in all tasks
+        else {
+            //change proj id for taskItem
+            taskItem.editProjID(newProjID);
+
+            //change proj id in base list
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (taskID == projectList[0].toDoItems[k].taskID) {
+                      projectList[0].toDoItems[k].editProjID(newProjID);
+                } 
+            }
+
+        }
+    }
+    if (selectedProjectID < 3) {
+        if (currentProjID > 2)  {
+            //switching to a diff built project
+            if (newProjID > 2) {
+                //change proj id for taskItem
+                taskItem.editProjID(newProjID);
+
+                //change proj id in base list
+                for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                    if (taskID == projectList[0].toDoItems[k].taskID) {
+                        projectList[0].toDoItems[k].editProjID(newProjID);
+                    } 
+                }
+
+            }
+            //putting task from built project into all tasks
+            else {
+    
+            }
+        }
+        
+        //switching from all tasks to a built project
+        else if (currentProjID == 0) {
+
+        }
+    }
+}
+
 
 
 function updateToDoItems (currentProject, container, position, taskItem, taskID) {
@@ -306,15 +428,15 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
         document.querySelector("#editDueDateInput").value = taskItem.dueDate;
 
         const select = document.querySelector("#editProjectSelect");
-        select.disabled = true;
+        //select.disabled = true;
         
         editConfirmBtn.onclick = function(e) {
             //add an item function
             console.log("CONFIRM");
             if(editToDo(currentProject, taskItem, taskID)){
                 dialog.close();        
-                setPriorityBorder(taskItem.priority, toDoItem);
-                setDueDateIcon(taskItem.dueDate, dueDate);
+                //setPriorityBorder(taskItem.priority, toDoItem);
+                //setDueDateIcon(taskItem.dueDate, dueDate);
                 mainpage();
 
         
