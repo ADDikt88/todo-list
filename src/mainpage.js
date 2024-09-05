@@ -99,7 +99,7 @@ function addToDo(currentProject) {
 };
 
 
-function editToDo(currentProject, container, position) {
+function editToDo(currentProject, taskItem, taskID) {
 
     //console.log("HELP");
     let taskTitle = document.querySelector("#editTaskTitle").value;
@@ -121,60 +121,33 @@ function editToDo(currentProject, container, position) {
         if (taskDescription < 1)
             taskDescription = "";
 
-        currentProject.toDoItems[position].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+        taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate);
         
-  
+
         if (selectedProjectID > 2) {
             //Update all tasks
+    
             //find the proj ID and task ID
-            let counter = 0;
+            //let counter = 0;
             for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (projectList[0].toDoItems[k].projID == selectedProjectID) {
-                    if (counter == position)
-                        projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
-                    else
-                        counter++;
+                if (taskID == projectList[0].toDoItems[k].taskID) {
+                      projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
                 } 
             }
-
-
-            // if (newProjSelect !== selectedProjectID) {
-            //     const newTaskID = projectList[newProjSelect].toDoItems.length;
-            //     const newMasterTaskID = projectList[0].toDoItems.length;
-            //     //add task to new proj
-            //     projectList[newProjSelect].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-            //         undefined, undefined, undefined, dueDate, newProjSelect, newTaskID, false)); 
-            //     projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-            //         undefined, undefined, undefined, dueDate, newProjSelect, newMasterTaskID, false)); 
-
-
-            //     //projectList[selectedProjectID].toDoItems.splice(0,1);
- 
-            //     //mainpage();
-
-            //}
-     
+        
         }
-
+    
         if (selectedProjectID == 0) {
-
-            const targetProjID = projectList[0].toDoItems[position].projID;
-            const masterTaskID = projectList[0].toDoItems[position].taskID;
-
+    
+            const targetProjID = taskItem.projID;
+    
             //find the proj ID and task ID
-            let counter = 0;
-            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
-                    if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
-                        projectList[targetProjID].toDoItems[counter].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
-                    else
-                        counter++;
-                } 
+            for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
+                if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
+                    projectList[targetProjID].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+                }
             }
-
         }
-
-
 
         //mainpage();
         return true;
@@ -187,7 +160,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     //Create Task Item
     const toDoItem = document.createElement("div");
     toDoItem.setAttribute("class", "taskDiv");
-    toDoItem.setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + position);
+    toDoItem.setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + taskID);
     container.appendChild(toDoItem);
 
 
@@ -224,8 +197,6 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     
             const targetProjID = taskItem.projID;
     
-            //projectList[targetProjID].toDoItems[targetTaskID].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
-    
             //find the proj ID and task ID
             for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
                 if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
@@ -258,7 +229,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     status.style.width = "auto";
     status.setAttribute("type", "checkbox");
     status.setAttribute("class", "status-input");
-    status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
+    status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + taskID);
     status.checked = taskItem.status;
     if (status.checked)
     {
@@ -276,18 +247,18 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     }
     status.addEventListener("change", function(e) {
         const currentCheck = e.target.id;
-        const currentCheckID = currentCheck.split('_')[3];
+        //const currentCheckID = currentCheck.split('_')[3];
 
         if (e.target.checked) {
             toDoItem.style.backgroundColor = "#a9f7c7";
             //currentProject.toDoItems[currentCheckID].status = true;
             toDoTitle.style.backgroundColor = "#a9f7c7";
-            changeCheckStatus(true, currentCheckID);
+            changeCheckStatus(true, taskID, taskItem);
         } else {
             toDoItem.style.backgroundColor = "";
             toDoTitle.style.backgroundColor = "";
             //currentProject.toDoItems[currentCheckID].status = false;
-            changeCheckStatus(false, currentCheckID);
+            changeCheckStatus(false, taskID, taskItem);
         }
 
     });
@@ -302,7 +273,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     editBtn.src = editIcon;
     editBtn.height = "25";
     editBtn.setAttribute("class", "editBtn");
-    editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + position);
+    editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + taskID);
 
     taskItem.editBtn = editBtn;
     
@@ -317,14 +288,14 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
             // dialogForm.reset();
             // When the user clicks the confirm button, close the dialog
             const currentButton = e.target.id;
-            const currentButtonID = currentButton.split('_')[3];
+            //const currentButtonID = currentButton.split('_')[3];
 
             
-            document.querySelector("#editTaskTitle").value = currentProject.toDoItems[currentButtonID].title;
-            document.querySelector("#editTaskDescription").value = currentProject.toDoItems[currentButtonID].description;
-            document.querySelector("#editPriorityLevel").value = currentProject.toDoItems[currentButtonID].priority;
-            document.querySelector("#editProjectSelect").value = currentProject.toDoItems[currentButtonID].projID;
-            document.querySelector("#editDueDateInput").value = currentProject.toDoItems[currentButtonID].dueDate;
+            document.querySelector("#editTaskTitle").value = taskItem.title;
+            document.querySelector("#editTaskDescription").value = taskItem.description;
+            document.querySelector("#editPriorityLevel").value = taskItem.priority;
+            document.querySelector("#editProjectSelect").value = taskItem.projID;
+            document.querySelector("#editDueDateInput").value = taskItem.dueDate;
 
             const select = document.querySelector("#editProjectSelect");
             select.disabled = true;
@@ -332,12 +303,8 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
             editConfirmBtn.onclick = function(e) {
                 //add an item function
                 console.log("CONFIRM");
-                if(editToDo(currentProject, container, currentButtonID)){
-                    dialog.close();
-                    // toDoTitle.textContent = currentProject.toDoItems[currentButtonID].title;
-                    // toDoDescription.textContent = currentProject.toDoItems[currentButtonID].description;
-                    // priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
-                    
+                if(editToDo(currentProject, taskItem, taskID)){
+                    dialog.close();        
                     setPriorityBorder(taskItem.priority, toDoItem);
                     setDueDateIcon(taskItem.dueDate, dueDate);
                     mainpage();
@@ -364,7 +331,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     delBtn.src = trashIcon;
     delBtn.height = "25";
     delBtn.setAttribute("class", "delBtn");
-    delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + position);
+    delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + taskID);
 
     taskItem.delBtn = delBtn;
 
@@ -376,9 +343,9 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
         delBtn.addEventListener('click', (e) => {
             if (confirm("Are you sure you want to remove this task?") == true) {
                 const currentButton = e.target.id;
-                const currentButtonID = currentButton.split('_')[3];
+                //const currentButtonID = currentButton.split('_')[3];
                 
-                deleteToDo (currentButtonID);
+                deleteToDo (taskID, taskItem);
                 
                 console.log(currentProject.toDoItems);
                 mainpage();
@@ -416,45 +383,49 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
  * These functions display the project header and the to-do-list frame
  */
 
-function deleteToDo (currentButtonID) {
+function deleteToDo (taskID, taskItem) {
     //now we have to delete from all tasks
     if (selectedProjectID > 2) {    
         //find the proj ID and task ID
-        let counter = 0;
         for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-            if (projectList[0].toDoItems[k].projID == selectedProjectID) {
-                if (counter == currentButtonID){
+            if (projectList[0].toDoItems[k].taskID == taskID) {
                     projectList[0].toDoItems.splice(k,1);
-                }
-                else
-                    counter++;
             } 
         }
-        projectList[selectedProjectID].toDoItems.splice(currentButtonID,1);
+        for (let j = 0; j < (projectList[selectedProjectID].toDoItems).length; j++){
+            if (projectList[selectedProjectID].toDoItems[j].taskID == taskID) {
+                    projectList[selectedProjectID].toDoItems.splice(j,1);
+            } 
+        }
     }
 
     if (selectedProjectID == 0) {
 
-        const targetProjID = projectList[0].toDoItems[currentButtonID].projID;
-        const masterTaskID = projectList[0].toDoItems[currentButtonID].taskID;
+        const targetProjID = taskItem.projID;
 
-        console.log ("targetP " + targetProjID + " masterTaskID " + masterTaskID);
-
-        if (targetProjID == 0)
-            projectList[selectedProjectID].toDoItems.splice(currentButtonID,1);
-
-        else {
+        //console.log ("targetP " + targetProjID + " masterTaskID " + masterTaskID);
+        if (targetProjID > 2) {
             //find the proj ID and task ID
-            let counter = 0;
-            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
-                    if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
-                        projectList[targetProjID].toDoItems.splice(counter,1);
-                    else
-                        counter++;
+            for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
+                if (projectList[targetProjID].toDoItems[k].taskID == taskID) { //found projectID
+                    projectList[targetProjID].toDoItems.splice(k,1);
                 } 
             }
-            projectList[selectedProjectID].toDoItems.splice(currentButtonID,1);
+            for (let j = 0; j < (projectList[0].toDoItems).length; j++){
+                if (projectList[0].toDoItems[j].taskID == taskID) {
+                        projectList[0].toDoItems.splice(j,1);
+                } 
+            }
+        }
+
+        if (targetProjID == 0)
+        {
+            //find the all task task ID
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (projectList[0].toDoItems[k].taskID == taskID){ //found masterTaskID
+                    projectList[0].toDoItems.splice(k,1);
+                }
+            }
         }
         
 
@@ -685,44 +656,34 @@ function setPriorityBorder (priority, element) {
     return element;
 }
 
-function changeCheckStatus (checked, position) {
+function changeCheckStatus (checked, taskID, taskItem) {
 
     //toDoItem.style.backgroundColor = "#a9f7c7";
-    projectList[selectedProjectID].toDoItems[position].status = checked;
+    taskItem.status = checked;
     //toDoTitle.style.backgroundColor = "#a9f7c7";
 
     if (selectedProjectID > 2) {
         //Update all tasks
 
         //find the proj ID and task ID
-        let counter = 0;
+        //let counter = 0;
         for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-            if (projectList[0].toDoItems[k].projID == selectedProjectID) {
-                if (counter == position)
-                    projectList[0].toDoItems[k].status = checked;
-                else
-                    counter++;
+            if (taskID == projectList[0].toDoItems[k].taskID) {
+                projectList[0].toDoItems[k].status = checked;
             } 
         }
- 
+    
     }
 
     if (selectedProjectID == 0) {
 
-        const targetProjID = projectList[0].toDoItems[position].projID;
-        const masterTaskID = projectList[0].toDoItems[position].taskID;
-
-        //projectList[targetProjID].toDoItems[targetTaskID].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+        const targetProjID = taskItem.projID;
 
         //find the proj ID and task ID
-        let counter = 0;
-        for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-            if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
-                if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
-                    projectList[targetProjID].toDoItems[counter].status = checked;
-                else
-                    counter++;
-            } 
+        for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
+            if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
+                projectList[targetProjID].toDoItems[k].status = checked;
+            }
         }
     }
 
