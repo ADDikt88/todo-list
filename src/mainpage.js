@@ -593,7 +593,8 @@ function displayProjectHeader (content, currentProject) {
             optionToChange.text = currentProject.title;
 
             projectTitle.blur();
-            e.preventDefault();
+            mainpage();
+            //e.preventDefault();
     });
 
 
@@ -614,7 +615,7 @@ function displayProjectHeader (content, currentProject) {
             
 
             projectDescription.blur();
-            e.preventDefault();
+            //e.preventDefault();
         });
 
     
