@@ -131,7 +131,7 @@ function editToDo(currentProject, taskItem, taskID) {
             taskDescription = "";
 
         
-        
+        const oldProjID = taskItem.projID;
         console.log("TASK ITEM VALUE: " + taskItem.projID);
 
         if (selectedProjectID > 2) {
@@ -164,7 +164,7 @@ function editToDo(currentProject, taskItem, taskID) {
     
         if (selectedProjectID < 3) {
     
-            const targetProjID = taskItem.projID;
+            
             taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
             // // find the proj ID and task ID
             // for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
@@ -173,15 +173,15 @@ function editToDo(currentProject, taskItem, taskID) {
             //     }
             // }
 
-            if (targetProjID > 2) {
+            if (oldProjID > 2) {
                 if (newProjSelect > 2) {
-                    if (newProjSelect !== targetProjID) //add the existing item to the new project
+                    if (newProjSelect !== oldProjID) //add the existing item to the new project
                     {                        
                         projectList[newProjSelect].toDoItems.push(taskItem); 
                         //delete any straggling items in that project
-                        for (let j = 0; j < (projectList[targetProjID].toDoItems).length; j++) {
-                            if (projectList[targetProjID].toDoItems[j].projID !== targetProjID) {
-                                projectList[targetProjID].toDoItems.splice(j,1);
+                        for (let j = 0; j < (projectList[oldProjID].toDoItems).length; j++) {
+                            if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
+                                projectList[oldProjID].toDoItems.splice(j,1);
                             }
                         }
                     }
@@ -189,16 +189,16 @@ function editToDo(currentProject, taskItem, taskID) {
                 }
                 else if (newProjSelect < 3) {
                     //delete any straggling items in that project
-                    for (let j = 0; j < (projectList[targetProjID].toDoItems).length; j++) {
-                        if (projectList[targetProjID].toDoItems[j].projID !== targetProjID) {
-                            projectList[targetProjID].toDoItems.splice(j,1);
+                    for (let j = 0; j < (projectList[oldProjID].toDoItems).length; j++) {
+                        if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
+                            projectList[oldProjID].toDoItems.splice(j,1);
                         }
                     }
                 }
                        
                     
             }
-            else if (targetProjID < 3) {
+            else if (oldProjID < 3) {
                 if (newProjSelect > 2) {
                     projectList[newProjSelect].toDoItems.push(taskItem); 
                 }
@@ -585,9 +585,18 @@ function displayProjectHeader (content, currentProject) {
             currentProject.title = projectTitle.value;
             const currentProjectTitle = document.querySelector("#projID_" + selectedProjectID + "_btn");
             currentProjectTitle.textContent = projectTitle.value;
+
+            const select = document.querySelector("#editProjectSelect");
+            console.log(select);
+            
+            const optionToChange = Array.from(select.options).find(option => option.value == selectedProjectID);
+            optionToChange.text = currentProject.title;
+
             projectTitle.blur();
             e.preventDefault();
     });
+
+
     
     const projectDescription = document.createElement("textarea");
     projectDescription.setAttribute("id","proj-desc");
@@ -601,6 +610,9 @@ function displayProjectHeader (content, currentProject) {
 
     projectDescription.addEventListener('change', function(e) {
             currentProject.description = projectDescription.value;
+            //update dialog here
+            
+
             projectDescription.blur();
             e.preventDefault();
         });
@@ -608,6 +620,8 @@ function displayProjectHeader (content, currentProject) {
     
     projectTitle.value = currentProject.title;
     projectDescription.value = currentProject.description;
+
+
     projectHeader.appendChild(projectTitle);
     projectHeader.appendChild(projectDescription);
   
