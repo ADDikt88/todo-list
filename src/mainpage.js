@@ -7,6 +7,7 @@ import flagIcon2 from  "./flag2.svg";
 import flagIcon3 from  "./flag3.svg";
 import calendarIcon from  "./calendar.svg";
 import goldStarIcon from  "./goldstar.svg";
+import redStarIcon from  "./redStar.svg";
 import { parseISO, differenceInDays, compareAsc, format } from "date-fns";
 import { se } from "date-fns/locale";
 //format(new Date(2014,1,11), "yyyy-MM-dd");
@@ -619,8 +620,8 @@ function displayProjectHeader (content, currentProject) {
     const projectDescription = document.createElement("textarea");
     projectDescription.setAttribute("id","proj-desc");
     projectDescription.setAttribute("autocomplete","off");
-    projectDescription.setAttribute("placeholder","Add a description...");
-    projectDescription.setAttribute("rows","4");
+    projectDescription.setAttribute("placeholder","Add a project description...");
+    projectDescription.setAttribute("rows","5");
 
     if (selectedProjectID < 3) {
         projectDescription.disabled = true;
@@ -771,7 +772,7 @@ function setDueDateIcon (date, dueDateDiv) {
     };
 
     if (daysDiff < 0)
-        return setIconAndText(goldStarIcon, "Past Due Date", dueDateDiv);
+        return setIconAndText(redStarIcon, "Past Due Date", dueDateDiv);
     else if (daysDiff > 3)
         return setIconAndText(calendarIcon, date, dueDateDiv);
     else {

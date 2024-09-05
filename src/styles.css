@@ -25,13 +25,55 @@ body {
 .sidebar {
     background-color: rgb(250, 218, 176);
     display: grid;
-    grid-template-rows: 300px 1fr;
+    grid-template-rows: 175px 1fr;
+    padding: 10px 20px;
 
 }
 
+.logoDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appTitle {
+  font-size: 2.3rem;
+  font-style: italic;
+}
+
+#noted-image {
+  height: 110px;
+}
+
+.author {
+  font-size: 0.9rem;
+}
+
+a:link {
+  color: blue;
+  background-color: transparent;
+  text-decoration: underline;
+}
+a:visited {
+  color: darkblue;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: red;
+  background-color: transparent;
+  text-decoration: underline;
+}
+/* a:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+} */
+
 .main-page {
     display: grid;
-    grid-template-rows: 150px 1fr;
+    grid-template-rows: 188px 1fr;
     background-color:beige;
     
 
@@ -121,9 +163,9 @@ dialog[open]::backdrop {
 
 .projDiv {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
 
   font-size: 1.5rem;
   background-color:bisque;
@@ -182,6 +224,7 @@ dialog[open]::backdrop {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-weight: 900;
  }
 
 #proj-desc {

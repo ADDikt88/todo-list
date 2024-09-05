@@ -1,10 +1,14 @@
 import {mainpage, displayProjectHeader, displayToDoItems} from "./mainpage.js";
 import trashIcon from "./trash.svg";
+import flagIcon1 from  "./flag1.svg";
+import goldStarIcon from  "./goldstar.svg";
+import excMarkIcon from  "./exc.svg";
+import allBoxIcon from  "./allBox.svg";
 
 let listOfItems = [];
-let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a task. You currently cannot edit a task's project (coming soon...)", listOfItems, undefined, undefined);
-let todaysProject = createProject ("Today", "These are today's tasks. Adding a task here will automatically categorize it as due today", listOfItems, undefined, undefined);
-let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority", listOfItems, undefined, undefined);
+let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a new task, set a priority, and pick a due date. If you make a project, you can assign tasks to them, too!", listOfItems, undefined, undefined);
+let todaysProject = createProject ("Today", "These are today's tasks. Adding a task here will automatically categorize it as due today.", listOfItems, undefined, undefined);
+let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority.", listOfItems, undefined, undefined);
 let projectList = [defaultProject, todaysProject, upcomingProject];
 let selectedProjectID = 0;
 
@@ -118,13 +122,17 @@ function displayProjectList () {
     });
 
     
-    function defaultButtons (id, name ) {
+    function defaultButtons (id, name, projIconImg ) {
         const defaultProjectButton = document.createElement("button");
         defaultProjectButton.setAttribute("class", "projDiv");
         defaultProjectButton.setAttribute("id", "projID_" + id);
         const defaultProjectBtnText = document.createElement("p");
 
         defaultProjectBtnText.textContent = name;
+
+
+        
+        defaultProjectButton.appendChild(projIconImg);
         defaultProjectButton.appendChild(defaultProjectBtnText);        
 
         // const trashIconImg = document.createElement("img");
@@ -146,9 +154,20 @@ function displayProjectList () {
         projectListContainer.appendChild(defaultProjectButton);
     }
 
-    defaultButtons(0, projectList[0].title);
-    defaultButtons(1, projectList[1].title);
-    defaultButtons(2, projectList[2].title);
+    const allBoxIconImg = document.createElement("img");
+    allBoxIconImg.src = allBoxIcon;
+    allBoxIconImg.height = "30";
+    defaultButtons(0, projectList[0].title, allBoxIconImg);
+
+    const goldStarIconImg = document.createElement("img");
+    goldStarIconImg.src = goldStarIcon;
+    goldStarIconImg.height = "27";
+    defaultButtons(1, projectList[1].title, goldStarIconImg);
+
+    const excMarkIconImg = document.createElement("img");
+    excMarkIconImg.src = excMarkIcon;
+    excMarkIconImg.height = "27";
+    defaultButtons(2, projectList[2].title, excMarkIconImg);
     
     projectListContainer.appendChild(addProjectBtn);
     
