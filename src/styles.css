@@ -10,6 +10,7 @@ div {
 
 body {
   font-family: "Lato", sans-serif;
+
 }
 
 
@@ -18,8 +19,8 @@ body {
   display: grid;
   text-align: center;
   grid-template-columns: 300px 1fr;
-  
   height: 100vh;
+
 }
 .sidebar {
     background-color: rgb(250, 218, 176);
@@ -232,9 +233,12 @@ dialog[open]::backdrop {
 
 
 .due-date {
-  min-width: 100px;
-  margin: 16px auto 0 0;
-  text-align: right;
+  min-width: 125px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  margin: 12px 4px 0 0;
 }
 
 .prio-flag {
@@ -243,8 +247,10 @@ dialog[open]::backdrop {
 }
 
 .status-input {
+  
   transform: scale(1.5);
   margin: 18px 0 15px 5px;
+
 }
 
 .edit-del-div {
@@ -270,6 +276,7 @@ dialog[open]::backdrop {
   background-color:bisque;
   text-align: left;
   border: none;
+  cursor: pointer;
 }
 
 .to-do-title:hover {

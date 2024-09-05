@@ -2,7 +2,12 @@
 import {projectList, selectedProjectID} from "./projectList.js";
 import trashIcon from "./trash.svg";
 import editIcon from "./edit.svg";
-import { compareAsc, format } from "date-fns";
+import flagIcon1 from  "./flag1.svg";
+import flagIcon2 from  "./flag2.svg";
+import flagIcon3 from  "./flag3.svg";
+import calendarIcon from  "./calendar.svg";
+import goldStarIcon from  "./goldstar.svg";
+import { parseISO, differenceInDays, compareAsc, format } from "date-fns";
 //format(new Date(2014,1,11), "yyyy-MM-dd");
 
 
@@ -214,6 +219,76 @@ function setCollapsible (collapsibleDiv) {
 
 }
 
+function setDueDateIcon (date, dueDateDiv) {
+    //const dueDateDiv = document.createElement("div");
+    dueDateDiv.innerHTML = "";
+    dueDateDiv.setAttribute("class", "due-date");
+    
+    const today = format(new Date(), "yyyy-MM-dd");
+    
+    const parsedDate = parseISO(date);
+    const parsedToday = parseISO(today);
+
+    const daysDiff = differenceInDays(parsedDate, parsedToday);
+    console.log (parsedDate);
+   
+    function setIconAndText (iconName, text, dueDateDiv){
+        console.log(text);
+        const dueImg = document.createElement("img");
+        dueImg.src = iconName;
+        dueImg.height = "25";
+        
+        dueDateDiv.append(dueImg);
+    
+        let dueText = document.createElement("p");
+        dueText.textContent = text;
+    
+        dueDateDiv.append(dueText);
+        return dueDateDiv;
+    };
+
+    if (daysDiff < 0)
+        return setIconAndText(goldStarIcon, "Past Due Date", dueDateDiv);
+    else if (daysDiff > 3)
+        return setIconAndText(calendarIcon, date, dueDateDiv);
+    else {
+        switch (daysDiff) {
+            case 0: {
+                return setIconAndText(goldStarIcon, "Today", dueDateDiv);
+            }
+            case 1: {
+                return setIconAndText(flagIcon1, "1 Day Left", dueDateDiv);
+            }
+            case 2: {
+                return setIconAndText(flagIcon2, "2 Days Left", dueDateDiv);
+            };
+            case 3: {
+                return setIconAndText(flagIcon3, "3 Days Left", dueDateDiv);
+            }
+            default: {
+                let dueText = document.createElement("p");
+                dueText.textContent = "No Due Date";
+                dueDateDiv.append(dueText);
+                return dueDateDiv;
+            }
+
+        }
+
+    }
+    
+}
+
+function setPriorityBorder (priority, element) {
+    if (priority == "high")
+        element.style.border = "3px solid red";
+    else if (priority == "med")
+        element.style.border = "3px solid yellow";
+    else
+        element.style.border = "1px solid black";
+    
+    return element;
+}
+
 function updateToDoItems (currentProject, container, position) {
 
     //Create Task Item
@@ -230,7 +305,7 @@ function updateToDoItems (currentProject, container, position) {
     toDoDescription.setAttribute("autocomplete","off");
     toDoDescription.setAttribute("rows","4");
     toDoDescription.setAttribute("placeholder", "Add some notes for this task...");
-    
+    setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
 
     toDoDescription.addEventListener('change', function(e) {
         currentProject.toDoItems[position].description = toDoDescription.value;
@@ -239,17 +314,23 @@ function updateToDoItems (currentProject, container, position) {
     });
 
 
-    const priorityLevel = document.createElement("div");
-    priorityLevel.setAttribute("class", "prio-flag");
+    //const priorityLevel = document.createElement("div");
+    //priorityLevel.setAttribute("class", "prio-flag");
 
-    const dueDate = document.createElement("div");
-    dueDate.setAttribute("class", "due-date");
+    
+    
 
     toDoTitle.textContent = currentProject.toDoItems[position].title;
     toDoTitle.style.fontSize = "1.5rem";
     toDoDescription.textContent = currentProject.toDoItems[position].description;
-    priorityLevel.textContent = currentProject.toDoItems[position].priority;
-    dueDate.textContent = currentProject.toDoItems[position].dueDate;
+    //priorityLevel.textContent = currentProject.toDoItems[position].priority;
+    
+    const dueDate = document.createElement("div");
+    //dueDate.setAttribute("class", "due-date");
+    //dueDate.textContent = currentProject.toDoItems[position].dueDate;
+
+    setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
+
 
 
 
@@ -275,7 +356,6 @@ function updateToDoItems (currentProject, container, position) {
     currentProject.toDoItems[position].checkmark = status;
 
 
-  
 
     //Checkbox listener for status
     status.addEventListener("change", function(e) {
@@ -332,8 +412,9 @@ function updateToDoItems (currentProject, container, position) {
                 dialog.close();
                 toDoTitle.textContent = currentProject.toDoItems[currentButtonID].title;
                 toDoDescription.textContent = currentProject.toDoItems[currentButtonID].description;
-                priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
-                dueDate.textContent = currentProject.toDoItems[currentButtonID].dueDate;
+                //priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
+                setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
+                setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
             }
                 
             e.preventDefault();
@@ -397,7 +478,7 @@ function updateToDoItems (currentProject, container, position) {
     titleDiv.appendChild(toDoTitle);
     titleDiv.appendChild(toDoDescription);
     toDoItem.appendChild(dueDate);
-    toDoItem.appendChild(priorityLevel);
+    //toDoItem.appendChild(priorityLevel);
     toDoItem.appendChild(editDelDiv);
 
     setCollapsible(toDoTitle);

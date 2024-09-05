@@ -5,7 +5,6 @@ import { displayProjectList } from "./projectList.js";
 
 function sidebar () {
     const content = document.querySelector(".sidebar");
-    content.appendChild(dueDateMenu());
     content.appendChild(displayProjectList());
 }
 
