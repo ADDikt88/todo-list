@@ -2,8 +2,10 @@ import {mainpage, displayProjectHeader, displayToDoItems} from "./mainpage.js";
 import trashIcon from "./trash.svg";
 
 let listOfItems = [];
-let defaultProject = createProject ("Default Project", "This is a default project description.", listOfItems, undefined, undefined);
-let projectList = [defaultProject];
+let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a task. You currently cannot edit a task's project (coming soon...)", listOfItems, undefined, undefined);
+let todaysProject = createProject ("Today", "These are today's tasks. Currently, this page is in **read-only** mode.", listOfItems, undefined, undefined);
+let upcomingProject = createProject ("Next 7 Days", "These are upcoming tasks in the next week. Currently, this page is in **read-only** mode.", listOfItems, undefined, undefined);
+let projectList = [defaultProject, todaysProject, upcomingProject];
 let selectedProjectID = 0;
 
 //function 
@@ -26,6 +28,7 @@ function newProject(container) {
     let projTitle = document.querySelector("#projTitle").value;
     let projDescription = document.querySelector("#projDescription").value;
 
+
     if (projTitle < 1)
     {
         alert("Please enter a new project title");
@@ -43,8 +46,18 @@ function newProject(container) {
         console.log("ADDING NEW PROJECT");
         const position = projectList.length - 1;
         updateProjects (container, position);
+        //selectedProjectID = position;
         const content = document.querySelector(".main-page");
         content.innerHTML = "";
+
+        const select = document.querySelector("#editProjectSelect");
+        console.log(select);
+      
+        const newProjOption = document.createElement("option");
+        newProjOption.value = position;
+        newProjOption.text = projectList[position].title;
+        select.appendChild(newProjOption);
+
         mainpage();
         console.log(projectList);
         return true;
@@ -71,7 +84,7 @@ function displayProjectList () {
 
     const addProjectBtn = document.createElement("button");
     addProjectBtn.setAttribute("class","add-project-btn");
-    projectListContainer.appendChild(addProjectBtn);
+    
     addProjectBtn.textContent = "New Project +";
     
     const dialogForm = document.querySelector("#addProjectForm");
@@ -104,36 +117,43 @@ function displayProjectList () {
         e.preventDefault();
     });
 
-        
-    const defaultProjectButton = document.createElement("button");
-    defaultProjectButton.setAttribute("class", "projDiv");
-    defaultProjectButton.setAttribute("id", "projID_" + 0);
-    const defaultProjectBtnText = document.createElement("p");
-
-    defaultProjectBtnText.textContent = defaultProject.title;
-    defaultProjectButton.appendChild(defaultProjectBtnText);
-    projectListContainer.appendChild(defaultProjectButton);
     
+    function defaultButtons (id, name ) {
+        const defaultProjectButton = document.createElement("button");
+        defaultProjectButton.setAttribute("class", "projDiv");
+        defaultProjectButton.setAttribute("id", "projID_" + id);
+        const defaultProjectBtnText = document.createElement("p");
 
-    // const trashIconImg = document.createElement("img");
-    // trashIconImg.src = trashIcon;
-    // trashIconImg.height = "20";
+        defaultProjectBtnText.textContent = name;
+        defaultProjectButton.appendChild(defaultProjectBtnText);        
 
-    //Project Listener
-    //defaultProjectButton.appendChild(trashIconImg);
-    defaultProjectButton.addEventListener('click', (e) => {
-        // dialogForm.reset();
-        // When the user clicks the confirm button, close the dialog
-        const currentButton = e.currentTarget.id;
-        const currentButtonID = currentButton.split('_')[1];
-        switchProject(currentButtonID);
-        e.preventDefault();
-    });
-    projectList[0].selfBtn = defaultProjectButton;
+        // const trashIconImg = document.createElement("img");
+        // trashIconImg.src = trashIcon;
+        // trashIconImg.height = "20";
+
+        //Project Listener
+        //defaultProjectButton.appendChild(trashIconImg);
+        defaultProjectButton.addEventListener('click', (e) => {
+            // dialogForm.reset();
+            // When the user clicks the confirm button, close the dialog
+            const currentButton = e.currentTarget.id;
+            const currentButtonID = currentButton.split('_')[1];
+            switchProject(currentButtonID);
+            e.preventDefault();
+        });
+        projectList[id].selfBtn = defaultProjectButton;
+
+        projectListContainer.appendChild(defaultProjectButton);
+    }
+
+    defaultButtons(0, projectList[0].title);
+    defaultButtons(1, projectList[1].title);
+    defaultButtons(2, projectList[2].title);
+    
+    projectListContainer.appendChild(addProjectBtn);
     
     return projectListContainer;
 }
-
 
 
 function updateProjects (container, position) {
@@ -155,6 +175,7 @@ function updateProjects (container, position) {
     container.appendChild(projectItem);
 
     selectedProjectID = position;
+    console.log ("Project " + selectedProjectID);
 
     //Create Self Selection Button
     projectItemBtn.addEventListener('click', (e) => {
@@ -190,6 +211,13 @@ function updateProjects (container, position) {
             container.removeChild(projToRemove);
             console.log ("Delete this project " + chosenButtonID);
 
+            const select = document.querySelector("#editProjectSelect");
+            console.log(chosenButtonID);
+        
+            const options = [...select.options];
+            const optionsIndex = options.findIndex(option => option.value == chosenButtonID);
+            select.remove(optionsIndex);
+
             projectList.splice(chosenButtonID,1);
 
             let projDivs = document.querySelectorAll(".projDiv");
@@ -197,12 +225,15 @@ function updateProjects (container, position) {
             let projDelBtns = document.querySelectorAll(".projDelBtn");
             
 
-            for (let k = 1; k < projectList.length; k++)
+            for (let k = 3; k < projectList.length; k++)
             {
                 projDivs[k].setAttribute("id", "projID_" + k);
-                projSelfBtns[k-1].setAttribute("id", "projID_" + k + "_btn");
-                projDelBtns[k-1].setAttribute("id", "projID_" + k + "_del");
+                projSelfBtns[k-3].setAttribute("id", "projID_" + k + "_btn");
+                projDelBtns[k-3].setAttribute("id", "projID_" + k + "_del");
             }
+
+            //displayProjectList();
+            
 
 
             if (selectedProjectID > chosenButtonID)

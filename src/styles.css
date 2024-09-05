@@ -184,6 +184,13 @@ dialog[open]::backdrop {
   
 }
 
+.proj-name {
+  display: flex;
+  font-size: 0.8rem;
+  color: grey;
+}
+
+
 /* To do container */
 
 .add-to-do-btn {
@@ -233,7 +240,7 @@ dialog[open]::backdrop {
 
 
 .due-date {
-  min-width: 125px;
+  min-width: 150px;
   display: flex;
   justify-content: flex-end;
   align-items: center;

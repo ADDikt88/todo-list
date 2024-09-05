@@ -28,7 +28,6 @@
                     <option value="med">Medium</option>
                     <option value="high">High</option>
                 </select>
-
             </div>
             <div class="inputs">
                 <label for="dueDateInput">Due Date: </label>
@@ -41,6 +40,46 @@
         </div>
     </form>
 </dialog>
+
+<!-- The dialog element -->
+<dialog id="editItemDialog">
+    <form id="editActionForm">
+        <div class="dialogBase">
+            <h4>Edit a task's properties</h2>
+            <div class="inputs">
+                <label for="editTaskTitle">Title: </label>
+                <input type="text" id="editTaskTitle" placeholder=" " minlength = 1 autocomplete="off">
+            </div>
+            <div class="inputs">
+                <label for="editTaskDescription">Description: </label>
+                <textarea id="editTaskDescription" placeholder=" " minlength = 1></textarea>
+            </div>
+            <div class="inputs">
+                <p>Priority Level? </p>
+                <select id="editPriorityLevel">
+                    <option value="low">Low</option>
+                    <option value="med">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div class="inputs">
+                <p>Change Project? </p>
+                <select id="editProjectSelect">
+                    <option value="0">All Tasks</option>
+                </select>
+            </div>
+            <div class="inputs">
+                <label for="editDueDateInput">Due Date: </label>
+                <input type="date" id="editDueDateInput" min="2022-01-01" max="2026-12-01">
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button id="editCloseDialogBtn" style="padding: 2px 5px;">Cancel</button>
+                <button id="editConfirmBtn" style="padding: 2px 5px;" value="default">Confirm</button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
 
 <!-- The dialog element -->
 <dialog id="addProjectDialog">

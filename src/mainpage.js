@@ -8,6 +8,7 @@ import flagIcon3 from  "./flag3.svg";
 import calendarIcon from  "./calendar.svg";
 import goldStarIcon from  "./goldstar.svg";
 import { parseISO, differenceInDays, compareAsc, format } from "date-fns";
+import { se } from "date-fns/locale";
 //format(new Date(2014,1,11), "yyyy-MM-dd");
 
 
@@ -18,32 +19,42 @@ import { parseISO, differenceInDays, compareAsc, format } from "date-fns";
 
 function mainpage () {
     const content = document.querySelector(".main-page");
+    content.innerHTML = "";
     console.log("HELLO" + selectedProjectID);
     let currentProject = projectList[selectedProjectID];
     console.log(projectList + currentProject + selectedProjectID);
     displayProjectHeader (content, currentProject);
     displayToDoItems (content, currentProject); 
+    
+
     console.log(format(new Date(), "yyyy-MM-dd"));
 
 }
 
-function createToDo (title, description, priority, editBtn, delBtn, checkmark, dueDate, status) {
+function createToDo (title, description, priority, editBtn, delBtn, checkmark, dueDate, projID, taskID, status) {
 
     function editItem (newTitle, newDesc, newPriority, newDueDate) {
         this.title = newTitle;
         this.description = newDesc;
         this.priority = newPriority;
-        this.dueDate = newDueDate
+        this.dueDate = newDueDate;
+
+
+    }
+
+    function editProjID (newProj) {
+        this.projID = newProj;
+
     }
 
     return {
-        title, description, priority, status, editItem, editBtn, delBtn, dueDate, checkmark,
+        title, description, priority, status, editItem, editProjID,  editBtn, delBtn, dueDate, projID, taskID, checkmark,
     }
 
 }
 
 //These two functions add or edit the to do list
-function addToDo(currentProject, container) {
+function addToDo(currentProject) {
 
     let taskTitle = document.querySelector("#taskTitle").value;
     let taskDescription = document.querySelector("#taskDescription").value;
@@ -61,14 +72,27 @@ function addToDo(currentProject, container) {
     }
     else 
     {   
+        //const position = currentProject.toDoItems.length;
         if (taskDescription < 1)
             taskDescription = "";
 
-        currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-            undefined, undefined, undefined, dueDate, false));
-        console.log("UPDATED");
-        const position = currentProject.toDoItems.length - 1;
-        updateToDoItems (currentProject, container, position);
+        //must add to the all tasks
+        let masterTaskID = projectList[0].toDoItems.length;
+    
+        if (selectedProjectID > 2)
+        {
+            projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
+                undefined, undefined, undefined, dueDate, selectedProjectID, masterTaskID, false));
+            
+            currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
+                undefined, undefined, undefined, dueDate, selectedProjectID, masterTaskID, false));
+        }
+        else {
+            projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
+                undefined, undefined, undefined, dueDate, 0, masterTaskID, false));
+        }
+
+        mainpage();
         return true;
                 
     }
@@ -77,10 +101,14 @@ function addToDo(currentProject, container) {
 
 function editToDo(currentProject, container, position) {
 
-    let taskTitle = document.querySelector("#taskTitle").value;
-    let taskDescription = document.querySelector("#taskDescription").value;
-    let priorityLevel = document.querySelector("#priorityLevel").value;
-    let dueDate = document.querySelector("#dueDateInput").value;
+    //console.log("HELP");
+    let taskTitle = document.querySelector("#editTaskTitle").value;
+    let taskDescription = document.querySelector("#editTaskDescription").value;
+    let priorityLevel = document.querySelector("#editPriorityLevel").value;
+    let dueDate = document.querySelector("#editDueDateInput").value;
+    let newProjSelect = document.querySelector("#editProjectSelect").value;
+
+    //console.log("NEW PROJ ID " + projSelect);
     
     if (taskTitle < 1)
     {
@@ -94,14 +122,362 @@ function editToDo(currentProject, container, position) {
             taskDescription = "";
 
         currentProject.toDoItems[position].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
-        console.log("UPDATED");
+        
+  
+        if (selectedProjectID > 2) {
+            //Update all tasks
+            //find the proj ID and task ID
+            let counter = 0;
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (projectList[0].toDoItems[k].projID == selectedProjectID) {
+                    if (counter == position)
+                        projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+                    else
+                        counter++;
+                } 
+            }
+
+
+            // if (newProjSelect !== selectedProjectID) {
+            //     const newTaskID = projectList[newProjSelect].toDoItems.length;
+            //     const newMasterTaskID = projectList[0].toDoItems.length;
+            //     //add task to new proj
+            //     projectList[newProjSelect].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
+            //         undefined, undefined, undefined, dueDate, newProjSelect, newTaskID, false)); 
+            //     projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
+            //         undefined, undefined, undefined, dueDate, newProjSelect, newMasterTaskID, false)); 
+
+
+            //     //projectList[selectedProjectID].toDoItems.splice(0,1);
+ 
+            //     //mainpage();
+
+            //}
+     
+        }
+
+        if (selectedProjectID == 0) {
+
+            const targetProjID = projectList[0].toDoItems[position].projID;
+            const masterTaskID = projectList[0].toDoItems[position].taskID;
+
+            //find the proj ID and task ID
+            let counter = 0;
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
+                    if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
+                        projectList[targetProjID].toDoItems[counter].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+                    else
+                        counter++;
+                } 
+            }
+
+        }
+
+
+
+        //mainpage();
         return true;
     }
 };
 
+
+function updateToDoItems (currentProject, container, position) {
+
+    //Create Task Item
+    const toDoItem = document.createElement("div");
+    toDoItem.setAttribute("class", "taskDiv");
+    toDoItem.setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + position);
+    container.appendChild(toDoItem);
+
+
+    //Create STATIC elements
+    const toDoTitle = document.createElement("button");
+    toDoTitle.setAttribute("class", "to-do-title");
+    const toDoDescription = document.createElement("textarea");
+    toDoDescription.setAttribute("class", "to-do-desc");
+    toDoDescription.setAttribute("autocomplete","off");
+    toDoDescription.setAttribute("rows","4");
+    toDoDescription.setAttribute("placeholder", "Add some notes for this task...");
+    setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
+
+    if (selectedProjectID == 1 || selectedProjectID == 2) {
+        toDoDescription.disabled = true;
+    }
+    toDoDescription.addEventListener('change', function(e) {
+        currentProject.toDoItems[position].description = toDoDescription.value;
+
+        if (selectedProjectID > 2) {
+            //Update all tasks
+    
+            //find the proj ID and task ID
+            let counter = 0;
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (projectList[0].toDoItems[k].projID == selectedProjectID) {
+                    if (counter == position)
+                        projectList[0].toDoItems[k].description = toDoDescription.value;
+                    else
+                        counter++;
+                } 
+            }
+        
+        }
+    
+        if (selectedProjectID == 0) {
+    
+            const targetProjID = projectList[0].toDoItems[position].projID;
+            const masterTaskID = projectList[0].toDoItems[position].taskID;
+    
+            //projectList[targetProjID].toDoItems[targetTaskID].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
+    
+            //find the proj ID and task ID
+            let counter = 0;
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
+                    if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
+                        projectList[targetProjID].toDoItems[counter].description = toDoDescription.value;
+                    else
+                        counter++;
+                } 
+            }
+        }
+
+        toDoDescription.blur();
+        e.preventDefault();
+    });
+    
+
+    
+    toDoTitle.textContent = currentProject.toDoItems[position].title;
+    toDoTitle.style.fontSize = "1.5rem";
+    toDoDescription.textContent = currentProject.toDoItems[position].description;
+    
+    const dueDate = document.createElement("div");
+    setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
+
+    //Create FUNCTIONAL elements
+    //create status element
+    const titleDiv = document.createElement("div");
+    titleDiv.setAttribute("class","task-title-div");
+    //statusDiv.textContent = "Complete?";
+
+    
+    const status = document.createElement("input");
+    status.style.width = "auto";
+    status.setAttribute("type", "checkbox");
+    status.setAttribute("class", "status-input");
+    status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
+    status.checked = currentProject.toDoItems[position].status;
+    if (status.checked)
+    {
+        toDoItem.style.backgroundColor = "#a9f7c7";
+        toDoTitle.style.backgroundColor = "#a9f7c7";
+    }
+
+    currentProject.toDoItems[position].checkmark = status;
+
+
+
+    //Checkbox listener for status
+    if (selectedProjectID == 1 || selectedProjectID == 2) {
+        status.disabled = true;
+    }
+    status.addEventListener("change", function(e) {
+        const currentCheck = e.target.id;
+        const currentCheckID = currentCheck.split('_')[3];
+
+        if (e.target.checked) {
+            toDoItem.style.backgroundColor = "#a9f7c7";
+            //currentProject.toDoItems[currentCheckID].status = true;
+            toDoTitle.style.backgroundColor = "#a9f7c7";
+            changeCheckStatus(true, currentCheckID);
+        } else {
+            toDoItem.style.backgroundColor = "";
+            toDoTitle.style.backgroundColor = "";
+            //currentProject.toDoItems[currentCheckID].status = false;
+            changeCheckStatus(false, currentCheckID);
+        }
+
+    });
+    
+   
+
+    //create edit/delete element
+    const editDelDiv = document.createElement("div");
+    editDelDiv.setAttribute("class", "edit-del-div");
+
+    const editBtn = document.createElement("img");
+    editBtn.src = editIcon;
+    editBtn.height = "25";
+    editBtn.setAttribute("class", "editBtn");
+    editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + position);
+
+    currentProject.toDoItems[position].editBtn = editBtn;
+    
+    editBtn.textContent = "Edit";
+    editDelDiv.appendChild(editBtn);
+
+    const dialogForm = document.querySelector("#editActionForm");
+    const dialog = document.querySelector("#editItemDialog");
+
+    if (selectedProjectID == 0 || selectedProjectID > 2) {
+        editBtn.addEventListener('click', (e) => {
+            // dialogForm.reset();
+            // When the user clicks the confirm button, close the dialog
+            const currentButton = e.target.id;
+            const currentButtonID = currentButton.split('_')[3];
+
+            
+            document.querySelector("#editTaskTitle").value = currentProject.toDoItems[currentButtonID].title;
+            document.querySelector("#editTaskDescription").value = currentProject.toDoItems[currentButtonID].description;
+            document.querySelector("#editPriorityLevel").value = currentProject.toDoItems[currentButtonID].priority;
+            document.querySelector("#editProjectSelect").value = currentProject.toDoItems[currentButtonID].projID;
+            document.querySelector("#editDueDateInput").value = currentProject.toDoItems[currentButtonID].dueDate;
+
+            const select = document.querySelector("#editProjectSelect");
+            select.disabled = true;
+            
+            editConfirmBtn.onclick = function(e) {
+                //add an item function
+                console.log("CONFIRM");
+                if(editToDo(currentProject, container, currentButtonID)){
+                    dialog.close();
+                    // toDoTitle.textContent = currentProject.toDoItems[currentButtonID].title;
+                    // toDoDescription.textContent = currentProject.toDoItems[currentButtonID].description;
+                    // priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
+                    
+                    setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
+                    setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
+                    mainpage();
+
+            
+                }
+                    
+                e.preventDefault();
+            }
+
+            // When the user clicks the close button, close the dialog
+            editCloseDialogBtn.onclick = function(e) {
+                dialog.close();
+                e.preventDefault();
+            }
+            dialog.showModal();
+        
+            e.preventDefault();
+        });
+    }
+
+
+    const delBtn = document.createElement("img");
+    delBtn.src = trashIcon;
+    delBtn.height = "25";
+    delBtn.setAttribute("class", "delBtn");
+    delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + position);
+
+    currentProject.toDoItems[position].delBtn = delBtn;
+
+    delBtn.textContent = "Delete";
+    editDelDiv.appendChild(delBtn);
+
+    if (selectedProjectID == 0 | selectedProjectID > 2)
+    {
+        delBtn.addEventListener('click', (e) => {
+            if (confirm("Are you sure you want to remove this task?") == true) {
+                const currentButton = e.target.id;
+                const currentButtonID = currentButton.split('_')[3];
+                
+                deleteToDo (currentButtonID);
+                
+                console.log(currentProject.toDoItems);
+                mainpage();
+            }
+            e.preventDefault();
+        });
+
+    }
+       
+
+
+    
+    
+    const projectName = document.createElement("p")
+    projectName.setAttribute("class", "proj-name");
+    projectName.textContent = projectList[currentProject.toDoItems[position].projID].title;
+    toDoTitle.appendChild(projectName);
+    toDoItem.appendChild(status)
+    toDoItem.appendChild(titleDiv);
+    titleDiv.appendChild(toDoTitle);
+    titleDiv.appendChild(toDoDescription);
+    toDoItem.appendChild(dueDate);
+    toDoItem.appendChild(editDelDiv);
+    setCollapsible(toDoTitle);
+
+    
+
+
+
+
+
+
+
+
+
+    console.log(currentProject.toDoItems);
+
+
+}
+
 /****
  * These functions display the project header and the to-do-list frame
  */
+
+function deleteToDo (currentButtonID) {
+    //now we have to delete from all tasks
+    if (selectedProjectID > 2) {    
+        //find the proj ID and task ID
+        let counter = 0;
+        for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+            if (projectList[0].toDoItems[k].projID == selectedProjectID) {
+                if (counter == currentButtonID){
+                    projectList[0].toDoItems.splice(k,1);
+                }
+                else
+                    counter++;
+            } 
+        }
+        projectList[selectedProjectID].toDoItems.splice(currentButtonID,1);
+    }
+
+    if (selectedProjectID == 0) {
+
+        const targetProjID = projectList[0].toDoItems[currentButtonID].projID;
+        const masterTaskID = projectList[0].toDoItems[currentButtonID].taskID;
+
+        console.log ("targetP " + targetProjID + " masterTaskID " + masterTaskID);
+
+        if (targetProjID == 0)
+            projectList[selectedProjectID].toDoItems.splice(currentButtonID,1);
+
+        else {
+            //find the proj ID and task ID
+            let counter = 0;
+            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
+                    if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
+                        projectList[targetProjID].toDoItems.splice(counter,1);
+                    else
+                        counter++;
+                } 
+            }
+            projectList[selectedProjectID].toDoItems.splice(currentButtonID,1);
+        }
+        
+
+        
+    }
+
+
+}
 
 function saveText(inputElement, currentProject) {
     const text = inputElement.value;
@@ -156,50 +532,85 @@ function displayToDoItems (content, currentProject) {
     const toDoContainer = document.createElement("div");
     toDoContainer.setAttribute("class", "to-do-container");
     content.appendChild(toDoContainer);
+    const addToDoItemBtn = document.createElement("button");
+    //Feature cannot add tasks to today or next 7 days just use for displaying
+   
+    toDoContainer.appendChild(addToDoItemBtn);
     
 
-    const addToDoItemBtn = document.createElement("button");
-    addToDoItemBtn.setAttribute("class", "add-to-do-btn");
-    toDoContainer.appendChild(addToDoItemBtn);
+    addToDoItemBtn.setAttribute("class", "add-to-do-btn");    
     addToDoItemBtn.textContent = "Add Task +";
     
     const dialogForm = document.querySelector("#addActionForm");
     const dialog = document.querySelector("#addItemDialog");
-
-    addToDoItemBtn.addEventListener('click', (e) => {
-        console.log("add task clicked");
-        dialogForm.reset();
-        // When the user clicks the confirm button, close the dialog
-        confirmBtn.onclick = function(e) {
-            //add an item function
-            console.log("CONFIRM");
-            if(addToDo(currentProject, toDoContainer))
-                dialog.close();
-            e.preventDefault();
-        }
-
-        // When the user clicks the close button, close the dialog
-        closeDialogBtn.onclick = function(e) {
-            dialog.close();
-            e.preventDefault();
-        }
-        dialog.showModal();
-      
-        dialogForm.addEventListener('keydown', function(e) {
-            if (e.key === "Enter") {
+    if (selectedProjectID == 0 || selectedProjectID > 2) {
+        addToDoItemBtn.addEventListener('click', (e) => {
+            console.log("add task clicked");
+            dialogForm.reset();
+            // When the user clicks the confirm button, close the dialog
+            confirmBtn.onclick = function(e) {
+                //add an item function
+                console.log("CONFIRM");
+                if(addToDo(currentProject))
+                    dialog.close();
                 e.preventDefault();
             }
-        });
 
-        e.preventDefault();
-    });
+            // When the user clicks the close button, close the dialog
+            closeDialogBtn.onclick = function(e) {
+                dialog.close();
+                e.preventDefault();
+            }
+            dialog.showModal();
+        
+            dialogForm.addEventListener('keydown', function(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                }
+            });
+
+            e.preventDefault();
+        });
+    }
+
 
     
-    for (let k = 0; k < (currentProject.toDoItems).length; k++)
-    {
-        console.log(currentProject.title);
-        updateToDoItems(currentProject, toDoContainer, k);
 
+    // if showing today's items
+    if (selectedProjectID == 1) {
+ 
+        for (let k = 0; k < (projectList[0].toDoItems).length; k++)
+            {
+                //console.log(projectList[0].title);
+                console.log(parseISO(format(new Date(), "yyyy-MM-dd")));
+                console.log("TESTING" + projectList[0].toDoItems);
+                let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
+                if (daysDiff <= 0)
+                    updateToDoItems(projectList[1], toDoContainer, k);             
+        
+            }
+    }
+
+    // if showing today's items
+    else if (selectedProjectID == 2) {
+        for (let k = 0; k < (projectList[0].toDoItems).length; k++)
+            {
+                //console.log(projectList[0].title);
+                console.log(parseISO(format(new Date(), "yyyy-MM-dd")));
+                console.log("TESTING" + projectList[0].toDoItems);
+                let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
+                if (daysDiff <= 7 && daysDiff >= 1)
+                    updateToDoItems(projectList[2], toDoContainer, k);             
+        
+            }
+    }
+
+    else {
+        for (let k = 0; k < (currentProject.toDoItems).length; k++)
+        {
+            console.log("CURRENT WORKING: " + currentProject.title);
+            updateToDoItems(currentProject, toDoContainer, k);    
+        }
     }
 
 
@@ -289,205 +700,48 @@ function setPriorityBorder (priority, element) {
     return element;
 }
 
-function updateToDoItems (currentProject, container, position) {
+function changeCheckStatus (checked, position) {
 
-    //Create Task Item
-    const toDoItem = document.createElement("div");
-    toDoItem.setAttribute("class", "taskDiv");
-    toDoItem.setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + position);
-    container.appendChild(toDoItem);
+    //toDoItem.style.backgroundColor = "#a9f7c7";
+    projectList[selectedProjectID].toDoItems[position].status = checked;
+    //toDoTitle.style.backgroundColor = "#a9f7c7";
 
-    //Create STATIC elements
-    const toDoTitle = document.createElement("button");
-    toDoTitle.setAttribute("class", "to-do-title");
-    const toDoDescription = document.createElement("textarea");
-    toDoDescription.setAttribute("class", "to-do-desc");
-    toDoDescription.setAttribute("autocomplete","off");
-    toDoDescription.setAttribute("rows","4");
-    toDoDescription.setAttribute("placeholder", "Add some notes for this task...");
-    setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
+    if (selectedProjectID > 2) {
+        //Update all tasks
 
-    toDoDescription.addEventListener('change', function(e) {
-        currentProject.toDoItems[position].description = toDoDescription.value;
-        toDoDescription.blur();
-        e.preventDefault();
-    });
-
-
-    //const priorityLevel = document.createElement("div");
-    //priorityLevel.setAttribute("class", "prio-flag");
-
-    
-    
-
-    toDoTitle.textContent = currentProject.toDoItems[position].title;
-    toDoTitle.style.fontSize = "1.5rem";
-    toDoDescription.textContent = currentProject.toDoItems[position].description;
-    //priorityLevel.textContent = currentProject.toDoItems[position].priority;
-    
-    const dueDate = document.createElement("div");
-    //dueDate.setAttribute("class", "due-date");
-    //dueDate.textContent = currentProject.toDoItems[position].dueDate;
-
-    setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
-
-
-
-
-    //Create FUNCTIONAL elements
-    //create status element
-    const titleDiv = document.createElement("div");
-    titleDiv.setAttribute("class","task-title-div");
-    //statusDiv.textContent = "Complete?";
-
-    
-    const status = document.createElement("input");
-    status.style.width = "auto";
-    status.setAttribute("type", "checkbox");
-    status.setAttribute("class", "status-input");
-    status.setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + position);
-    status.checked = currentProject.toDoItems[position].status;
-    if (status.checked)
-    {
-        toDoItem.style.backgroundColor = "#a9f7c7";
-        toDoTitle.style.backgroundColor = "#a9f7c7";
+        //find the proj ID and task ID
+        let counter = 0;
+        for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+            if (projectList[0].toDoItems[k].projID == selectedProjectID) {
+                if (counter == position)
+                    projectList[0].toDoItems[k].status = checked;
+                else
+                    counter++;
+            } 
+        }
+ 
     }
 
-    currentProject.toDoItems[position].checkmark = status;
+    if (selectedProjectID == 0) {
 
+        const targetProjID = projectList[0].toDoItems[position].projID;
+        const masterTaskID = projectList[0].toDoItems[position].taskID;
 
+        //projectList[targetProjID].toDoItems[targetTaskID].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
 
-    //Checkbox listener for status
-    status.addEventListener("change", function(e) {
-        const currentCheck = e.target.id;
-        const currentCheckID = currentCheck.split('_')[3];
-
-        if (e.target.checked) {
-            toDoItem.style.backgroundColor = "#a9f7c7";
-            currentProject.toDoItems[currentCheckID].status = true;
-            toDoTitle.style.backgroundColor = "#a9f7c7";
-        } else {
-            toDoItem.style.backgroundColor = "";
-            toDoTitle.style.backgroundColor = "";
-            currentProject.toDoItems[currentCheckID].status = false;
+        //find the proj ID and task ID
+        let counter = 0;
+        for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+            if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
+                if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
+                    projectList[targetProjID].toDoItems[counter].status = checked;
+                else
+                    counter++;
+            } 
         }
-
-    });
-
-   
-
-    //create edit/delete element
-    const editDelDiv = document.createElement("div");
-    editDelDiv.setAttribute("class", "edit-del-div");
-
-    const editBtn = document.createElement("img");
-    editBtn.src = editIcon;
-    editBtn.height = "25";
-    editBtn.setAttribute("class", "editBtn");
-    editBtn.setAttribute("id", "projID_" + selectedProjectID + "_editID_" + position);
-
-    currentProject.toDoItems[position].editBtn = editBtn;
-    
-    editBtn.textContent = "Edit";
-    editDelDiv.appendChild(editBtn);
-
-    const dialogForm = document.querySelector("#addActionForm");
-    const dialog = document.querySelector("#addItemDialog");
-
-
-    editBtn.addEventListener('click', (e) => {
-        // dialogForm.reset();
-        // When the user clicks the confirm button, close the dialog
-        const currentButton = e.target.id;
-        const currentButtonID = currentButton.split('_')[3];
-        document.querySelector("#taskTitle").value = currentProject.toDoItems[currentButtonID].title;
-        document.querySelector("#taskDescription").value = currentProject.toDoItems[currentButtonID].description;
-        document.querySelector("#priorityLevel").value = currentProject.toDoItems[currentButtonID].priority;
-        document.querySelector("#dueDateInput").value = currentProject.toDoItems[currentButtonID].dueDate;
-        
-        confirmBtn.onclick = function(e) {
-            //add an item function
-            console.log("CONFIRM");
-            if(editToDo(currentProject, container, currentButtonID)){
-                dialog.close();
-                toDoTitle.textContent = currentProject.toDoItems[currentButtonID].title;
-                toDoDescription.textContent = currentProject.toDoItems[currentButtonID].description;
-                //priorityLevel.textContent = currentProject.toDoItems[currentButtonID].priority;
-                setPriorityBorder(currentProject.toDoItems[position].priority, toDoItem);
-                setDueDateIcon(currentProject.toDoItems[position].dueDate, dueDate);
-            }
-                
-            e.preventDefault();
-        }
-
-        // When the user clicks the close button, close the dialog
-        closeDialogBtn.onclick = function(e) {
-            dialog.close();
-            e.preventDefault();
-        }
-        dialog.showModal();
-      
-        e.preventDefault();
-    });
-
-
-
-    const delBtn = document.createElement("img");
-    delBtn.src = trashIcon;
-    delBtn.height = "25";
-    delBtn.setAttribute("class", "delBtn");
-    delBtn.setAttribute("id", "projID_" + selectedProjectID + "_delID_" + position);
-
-    currentProject.toDoItems[position].delBtn = delBtn;
-
-    delBtn.textContent = "Delete";
-    editDelDiv.appendChild(delBtn);
-
-    delBtn.addEventListener('click', (e) => {
-        if (confirm("Are you sure you want to remove this task?") == true) {
-            const currentButton = e.target.id;
-            const currentButtonID = currentButton.split('_')[3];
-
-            let taskToRemoveID = "#projID_" + selectedProjectID + "_taskID_" + currentButtonID;
-            let taskToRemove = document.querySelector(taskToRemoveID);
-            container.removeChild(taskToRemove);
-            currentProject.toDoItems.splice(currentButtonID,1);
-            
-            let taskDivs = document.querySelectorAll(".taskDiv");
-            let editBtns = document.querySelectorAll(".editBtn");
-            let delBtns = document.querySelectorAll(".delBtn");
-            let statusCheckmarks = document.querySelectorAll(".status-input");
-
-            for (let k = 0; k < currentProject.toDoItems.length; k++)
-            {
-                taskDivs[k].setAttribute("id", "projID_" + selectedProjectID + "_taskID_" + k);
-                editBtns[k].setAttribute("id", "projID_" + selectedProjectID + "_editID_" + k);
-                delBtns[k].setAttribute("id", "projID_" + selectedProjectID + "_delID_" + k);
-                statusCheckmarks[k].setAttribute("id", "projID_" + selectedProjectID + "_statusID_" + k);
-            }
-
-            console.log(currentProject.toDoItems);
-        }
-        e.preventDefault();
-    });
-
-
-    //Append all items
-    toDoItem.appendChild(status)
-    toDoItem.appendChild(titleDiv);
-    titleDiv.appendChild(toDoTitle);
-    titleDiv.appendChild(toDoDescription);
-    toDoItem.appendChild(dueDate);
-    //toDoItem.appendChild(priorityLevel);
-    toDoItem.appendChild(editDelDiv);
-
-    setCollapsible(toDoTitle);
-    console.log(currentProject.toDoItems);
-
+    }
 
 }
-
-
 
 
 export {mainpage, displayProjectHeader, displayToDoItems};
