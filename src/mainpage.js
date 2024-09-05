@@ -182,7 +182,7 @@ function editToDo(currentProject, container, position) {
 };
 
 
-function updateToDoItems (currentProject, container, position, taskItem) {
+function updateToDoItems (currentProject, container, position, taskItem, taskID) {
 
     //Create Task Item
     const toDoItem = document.createElement("div");
@@ -213,11 +213,8 @@ function updateToDoItems (currentProject, container, position, taskItem) {
             //find the proj ID and task ID
             let counter = 0;
             for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (projectList[0].toDoItems[k].projID == selectedProjectID) {
-                    if (counter == position)
+                if (taskID == projectList[0].toDoItems[k].taskID) {
                         projectList[0].toDoItems[k].description = toDoDescription.value;
-                    else
-                        counter++;
                 } 
             }
         
@@ -226,19 +223,14 @@ function updateToDoItems (currentProject, container, position, taskItem) {
         if (selectedProjectID == 0) {
     
             const targetProjID = taskItem.projID;
-            const masterTaskID = taskItem.taskID;
     
             //projectList[targetProjID].toDoItems[targetTaskID].editItem(taskTitle, taskDescription, priorityLevel, dueDate);
     
             //find the proj ID and task ID
-            let counter = 0;
-            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (projectList[0].toDoItems[k].projID == targetProjID) { //found projectID
-                    if (projectList[0].toDoItems[k].taskID == masterTaskID) //found masterTaskID
-                        projectList[targetProjID].toDoItems[counter].description = toDoDescription.value;
-                    else
-                        counter++;
-                } 
+            for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
+                if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
+                        projectList[targetProjID].toDoItems[k].description = toDoDescription.value;
+                }
             }
         }
 
@@ -415,13 +407,6 @@ function updateToDoItems (currentProject, container, position, taskItem) {
     
 
 
-
-
-
-
-
-
-
     console.log(currentProject.toDoItems);
 
 
@@ -586,7 +571,7 @@ function displayToDoItems (content, currentProject) {
                 console.log("TESTING" + projectList[0].toDoItems);
                 let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
                 if (daysDiff <= 0)
-                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k]);             
+                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k], projectList[0].toDoItems[k].taskID);             
         
             }
     }
@@ -600,7 +585,7 @@ function displayToDoItems (content, currentProject) {
                 console.log("TESTING" + projectList[0].toDoItems);
                 let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
                 if (daysDiff <= 7 && daysDiff >= 1)
-                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k]);             
+                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k], projectList[0].toDoItems[k].taskID);             
         
             }
     }
@@ -609,7 +594,7 @@ function displayToDoItems (content, currentProject) {
         for (let k = 0; k < (currentProject.toDoItems).length; k++)
         {
             console.log("CURRENT WORKING: " + currentProject.title);
-            updateToDoItems(currentProject, toDoContainer, k, currentProject.toDoItems[k]);    
+            updateToDoItems(currentProject, toDoContainer, k, currentProject.toDoItems[k], currentProject.toDoItems[k].taskID);    
         }
     }
 
