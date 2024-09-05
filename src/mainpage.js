@@ -568,6 +568,7 @@ function saveText(inputElement, currentProject) {
 
 function displayProjectHeader (content, currentProject) {
     const projectHeader = document.createElement("div");
+    projectHeader.setAttribute ("class", "proj-header");
     content.appendChild(projectHeader);
     
     const projectTitle = document.createElement("input");

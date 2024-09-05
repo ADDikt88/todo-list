@@ -33,6 +33,7 @@ body {
     display: grid;
     grid-template-rows: 150px 1fr;
     background-color:beige;
+    
 
 }
 
@@ -165,6 +166,10 @@ dialog[open]::backdrop {
   filter: invert(0.5);
 }
 
+.proj-header {
+  display: flex;
+  flex-direction: column;
+}
 
 #proj-title {
   font-size: 3rem;
@@ -174,7 +179,6 @@ dialog[open]::backdrop {
   border: none;
   width: calc(100% - 50px);
   min-width: 200px;
-
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -197,6 +201,10 @@ dialog[open]::backdrop {
   display: flex;
   font-size: 0.8rem;
   color: grey;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 
@@ -221,6 +229,7 @@ dialog[open]::backdrop {
   gap: 10px;
   align-items: center;
   border-top: 1px solid gray;
+  
  
 }
 
@@ -299,11 +308,13 @@ dialog[open]::backdrop {
   text-align: left;
   border: none;
   cursor: pointer;
+  max-width: 400px;
 
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
 
 .to-do-title:hover {
   filter: brightness(1.05);
