@@ -586,7 +586,7 @@ function displayToDoItems (content, currentProject) {
                 console.log("TESTING" + projectList[0].toDoItems);
                 let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
                 if (daysDiff <= 0)
-                    updateToDoItems(projectList[1], toDoContainer, k);             
+                    updateToDoItems(projectList[0], toDoContainer, k);             
         
             }
     }
@@ -600,7 +600,7 @@ function displayToDoItems (content, currentProject) {
                 console.log("TESTING" + projectList[0].toDoItems);
                 let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
                 if (daysDiff <= 7 && daysDiff >= 1)
-                    updateToDoItems(projectList[2], toDoContainer, k);             
+                    updateToDoItems(projectList[0], toDoContainer, k);             
         
             }
     }
