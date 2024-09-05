@@ -3,8 +3,8 @@ import trashIcon from "./trash.svg";
 
 let listOfItems = [];
 let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a task. You currently cannot edit a task's project (coming soon...)", listOfItems, undefined, undefined);
-let todaysProject = createProject ("Today", "These are today's tasks. Currently, this page is in **read-only** mode.", listOfItems, undefined, undefined);
-let upcomingProject = createProject ("Next 7 Days", "These are upcoming tasks in the next week. Currently, this page is in **read-only** mode.", listOfItems, undefined, undefined);
+let todaysProject = createProject ("Today", "These are today's tasks. Adding a task here will automatically categorize it as due today", listOfItems, undefined, undefined);
+let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority", listOfItems, undefined, undefined);
 let projectList = [defaultProject, todaysProject, upcomingProject];
 let selectedProjectID = 0;
 

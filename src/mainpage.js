@@ -87,6 +87,14 @@ function addToDo(currentProject) {
             currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
                 undefined, undefined, undefined, dueDate, selectedProjectID, masterTaskID, false));
         }
+        else if (selectedProjectID == 2) {
+            projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, "high", 
+                undefined, undefined, undefined, dueDate, 0, masterTaskID, false));
+        }
+        else if (selectedProjectID == 1) {
+            projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
+                undefined, undefined, undefined, format(new Date(), "yyyy-MM-dd"), 0, masterTaskID, false));
+        }
         else {
             projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
                 undefined, undefined, undefined, dueDate, 0, masterTaskID, false));
@@ -137,7 +145,7 @@ function editToDo(currentProject, taskItem, taskID) {
         
         }
     
-        if (selectedProjectID == 0) {
+        if (selectedProjectID < 3) {
     
             const targetProjID = taskItem.projID;
     
@@ -174,9 +182,9 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     toDoDescription.setAttribute("placeholder", "Add some notes for this task...");
     setPriorityBorder(taskItem.priority, toDoItem);
 
-    if (selectedProjectID == 1 || selectedProjectID == 2) {
-        toDoDescription.disabled = true;
-    }
+    // if (selectedProjectID == 1 || selectedProjectID == 2) {
+    //     toDoDescription.disabled = true;
+    // }
     toDoDescription.addEventListener('change', function(e) {
         taskItem.description = toDoDescription.value;
 
@@ -193,7 +201,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
         
         }
     
-        if (selectedProjectID == 0) {
+        if (selectedProjectID < 3) {
     
             const targetProjID = taskItem.projID;
     
@@ -241,10 +249,10 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
 
 
 
-    //Checkbox listener for status
-    if (selectedProjectID == 1 || selectedProjectID == 2) {
-        status.disabled = true;
-    }
+    // //Checkbox listener for status
+    // if (selectedProjectID == 1 || selectedProjectID == 2) {
+    //     status.disabled = true;
+    // }
     status.addEventListener("change", function(e) {
         const currentCheck = e.target.id;
         //const currentCheckID = currentCheck.split('_')[3];
@@ -283,48 +291,48 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     const dialogForm = document.querySelector("#editActionForm");
     const dialog = document.querySelector("#editItemDialog");
 
-    if (selectedProjectID == 0 || selectedProjectID > 2) {
-        editBtn.addEventListener('click', (e) => {
-            // dialogForm.reset();
-            // When the user clicks the confirm button, close the dialog
-            const currentButton = e.target.id;
-            //const currentButtonID = currentButton.split('_')[3];
 
-            
-            document.querySelector("#editTaskTitle").value = taskItem.title;
-            document.querySelector("#editTaskDescription").value = taskItem.description;
-            document.querySelector("#editPriorityLevel").value = taskItem.priority;
-            document.querySelector("#editProjectSelect").value = taskItem.projID;
-            document.querySelector("#editDueDateInput").value = taskItem.dueDate;
+    editBtn.addEventListener('click', (e) => {
+        // dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+        const currentButton = e.target.id;
+        //const currentButtonID = currentButton.split('_')[3];
 
-            const select = document.querySelector("#editProjectSelect");
-            select.disabled = true;
-            
-            editConfirmBtn.onclick = function(e) {
-                //add an item function
-                console.log("CONFIRM");
-                if(editToDo(currentProject, taskItem, taskID)){
-                    dialog.close();        
-                    setPriorityBorder(taskItem.priority, toDoItem);
-                    setDueDateIcon(taskItem.dueDate, dueDate);
-                    mainpage();
-
-            
-                }
-                    
-                e.preventDefault();
-            }
-
-            // When the user clicks the close button, close the dialog
-            editCloseDialogBtn.onclick = function(e) {
-                dialog.close();
-                e.preventDefault();
-            }
-            dialog.showModal();
         
+        document.querySelector("#editTaskTitle").value = taskItem.title;
+        document.querySelector("#editTaskDescription").value = taskItem.description;
+        document.querySelector("#editPriorityLevel").value = taskItem.priority;
+        document.querySelector("#editProjectSelect").value = taskItem.projID;
+        document.querySelector("#editDueDateInput").value = taskItem.dueDate;
+
+        const select = document.querySelector("#editProjectSelect");
+        select.disabled = true;
+        
+        editConfirmBtn.onclick = function(e) {
+            //add an item function
+            console.log("CONFIRM");
+            if(editToDo(currentProject, taskItem, taskID)){
+                dialog.close();        
+                setPriorityBorder(taskItem.priority, toDoItem);
+                setDueDateIcon(taskItem.dueDate, dueDate);
+                mainpage();
+
+        
+            }
+                
             e.preventDefault();
-        });
-    }
+        }
+
+        // When the user clicks the close button, close the dialog
+        editCloseDialogBtn.onclick = function(e) {
+            dialog.close();
+            e.preventDefault();
+        }
+        dialog.showModal();
+    
+        e.preventDefault();
+    });
+    
 
 
     const delBtn = document.createElement("img");
@@ -338,22 +346,20 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
     delBtn.textContent = "Delete";
     editDelDiv.appendChild(delBtn);
 
-    if (selectedProjectID == 0 | selectedProjectID > 2)
-    {
-        delBtn.addEventListener('click', (e) => {
-            if (confirm("Are you sure you want to remove this task?") == true) {
-                const currentButton = e.target.id;
-                //const currentButtonID = currentButton.split('_')[3];
-                
-                deleteToDo (taskID, taskItem);
-                
-                console.log(currentProject.toDoItems);
-                mainpage();
-            }
-            e.preventDefault();
-        });
+    delBtn.addEventListener('click', (e) => {
+        if (confirm("Are you sure you want to remove this task?") == true) {
+            const currentButton = e.target.id;
+            //const currentButtonID = currentButton.split('_')[3];
+            
+            deleteToDo (taskID, taskItem);
+            
+            console.log(currentProject.toDoItems);
+            mainpage();
+        }
+        e.preventDefault();
+    });
 
-    }
+ 
        
 
 
@@ -399,7 +405,7 @@ function deleteToDo (taskID, taskItem) {
         }
     }
 
-    if (selectedProjectID == 0) {
+    if (selectedProjectID < 3) {
 
         const targetProjID = taskItem.projID;
 
@@ -427,11 +433,8 @@ function deleteToDo (taskID, taskItem) {
                 }
             }
         }
-        
 
-        
     }
-
 
 }
 
@@ -450,7 +453,9 @@ function displayProjectHeader (content, currentProject) {
     projectTitle.setAttribute("type","text");
     projectTitle.setAttribute("autocomplete","off");
 
-   
+    if (selectedProjectID < 3) {
+        projectTitle.disabled = true;
+    }
 
 
     projectTitle.addEventListener('change', function (e) {
@@ -468,7 +473,9 @@ function displayProjectHeader (content, currentProject) {
     projectDescription.setAttribute("placeholder","Add a description...");
     projectDescription.setAttribute("rows","4");
 
-
+    if (selectedProjectID < 3) {
+        projectDescription.disabled = true;
+    }
 
     projectDescription.addEventListener('change', function(e) {
             currentProject.description = projectDescription.value;
@@ -499,35 +506,35 @@ function displayToDoItems (content, currentProject) {
     
     const dialogForm = document.querySelector("#addActionForm");
     const dialog = document.querySelector("#addItemDialog");
-    if (selectedProjectID == 0 || selectedProjectID > 2) {
-        addToDoItemBtn.addEventListener('click', (e) => {
-            console.log("add task clicked");
-            dialogForm.reset();
-            // When the user clicks the confirm button, close the dialog
-            confirmBtn.onclick = function(e) {
-                //add an item function
-                console.log("CONFIRM");
-                if(addToDo(currentProject))
-                    dialog.close();
-                e.preventDefault();
-            }
 
-            // When the user clicks the close button, close the dialog
-            closeDialogBtn.onclick = function(e) {
+    addToDoItemBtn.addEventListener('click', (e) => {
+        console.log("add task clicked");
+        dialogForm.reset();
+        // When the user clicks the confirm button, close the dialog
+        confirmBtn.onclick = function(e) {
+            //add an item function
+            console.log("CONFIRM");
+            if(addToDo(currentProject))
                 dialog.close();
+            e.preventDefault();
+        }
+
+        // When the user clicks the close button, close the dialog
+        closeDialogBtn.onclick = function(e) {
+            dialog.close();
+            e.preventDefault();
+        }
+        dialog.showModal();
+    
+        dialogForm.addEventListener('keydown', function(e) {
+            if (e.key === "Enter") {
                 e.preventDefault();
             }
-            dialog.showModal();
-        
-            dialogForm.addEventListener('keydown', function(e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                }
-            });
-
-            e.preventDefault();
         });
-    }
+
+        e.preventDefault();
+    });
+    
 
 
     
@@ -551,13 +558,8 @@ function displayToDoItems (content, currentProject) {
     else if (selectedProjectID == 2) {
         for (let k = 0; k < (projectList[0].toDoItems).length; k++)
             {
-                //console.log(projectList[0].title);
-                console.log(parseISO(format(new Date(), "yyyy-MM-dd")));
-                console.log("TESTING" + projectList[0].toDoItems);
-                let daysDiff = differenceInDays(parseISO(projectList[0].toDoItems[k].dueDate), parseISO(format(new Date(), "yyyy-MM-dd")));
-                if (daysDiff <= 7 && daysDiff >= 1)
-                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k], projectList[0].toDoItems[k].taskID);             
-        
+                if (projectList[0].toDoItems[k].priority == "high")
+                    updateToDoItems(projectList[0], toDoContainer, k, projectList[0].toDoItems[k], projectList[0].toDoItems[k].taskID);
             }
     }
 
@@ -675,7 +677,7 @@ function changeCheckStatus (checked, taskID, taskItem) {
     
     }
 
-    if (selectedProjectID == 0) {
+    if (selectedProjectID < 3) {
 
         const targetProjID = taskItem.projID;
 
