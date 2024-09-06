@@ -10,10 +10,13 @@ let listOfItems = [];
 
 let selectedProjectID = 0;
 
+//let masterTaskID = 0;
+
 function init() {
     if (localStorage.getItem("projectList")) {
         const JSONString = localStorage.getItem("projectList");
         projectList = JSON.parse(JSONString);
+        
         console.log("LOADED " + projectList);
         
     }
@@ -23,6 +26,7 @@ function init() {
         let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority.", listOfItems, {}, {});
 
         projectList = [defaultProject, todaysProject, upcomingProject];
+
 
     }
 }
@@ -192,8 +196,21 @@ function displayProjectList () {
     
     projectListContainer.appendChild(addProjectBtn);
 
+   
+
+    
     for (let j = 3; j < projectList.length; j++)
         updateProjects (projectListContainer, j);
+
+    //Add in dialog options and re-factor
+    const select = document.querySelector("#editProjectSelect");
+
+     for (let i = 3; i < projectList.length; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = projectList[i].title;        
+        select.appendChild(option);
+    }
     
     return projectListContainer;
 }
@@ -254,6 +271,7 @@ function updateProjects (container, position) {
             container.removeChild(projToRemove);
             console.log ("Delete this project " + chosenButtonID);
 
+            //Delete dialog option and re-factor
             const select = document.querySelector("#editProjectSelect");
             console.log(chosenButtonID);
         
@@ -261,31 +279,46 @@ function updateProjects (container, position) {
             const optionsIndex = options.findIndex(option => option.value == chosenButtonID);
             select.remove(optionsIndex);
 
-            projectList.splice(chosenButtonID,1);
+            for (let i = 1; i < select.options.length; i++) {
+                select.options[i].value = i+2;
+            }
 
-            //Delete project tasks from master list
-            for (let i = 0; i < projectList[0].toDoItems.length; i++) {
+            //Delete project tasks from master list (REVERSE TO AVOID SKIPPING)
+            for (let i = projectList[0].toDoItems.length - 1; i >= 0; i--) {
                 if(projectList[0].toDoItems[i].projID == chosenButtonID) {
                     projectList[0].toDoItems.splice(i,1);
                 }
             }
+
+            projectList.splice(chosenButtonID,1);
 
             //Re-ID all projects
             for (let j = 3; j < projectList.length; j++) {
                 for (let k = 0; k < projectList[j].toDoItems.length; k++) {
                     projectList[j].toDoItems[k].projID = j;
 
-                    //Re-ID all projects in master list
                     for (let l = 0; l < projectList[0].toDoItems.length; l++) {
                         if(projectList[0].toDoItems[l].taskID == projectList[j].toDoItems[k].taskID) {
                             projectList[0].toDoItems[l].projID = j;
                         }
                     }
-
-             
                 }
             }
-            mainpage();
+
+            // //Re-ID all projects in master list
+            
+            // for (let l = 0; l < projectList[0].toDoItems.length; l++) {
+            //     for (let j = 3; j < projectList.length; j++) {
+            //         for (let k = 0; k < projectList[j].toDoItems.length; k++) {
+            //             if(projectList[0].toDoItems[l].taskID == projectList[j].toDoItems[k].taskID) {
+            //                 projectList[0].toDoItems[l].projID = j;
+            //             }
+            //         }
+            //     }
+            // }
+
+            
+
                       
 
             //Re-ID the buttons
@@ -303,17 +336,21 @@ function updateProjects (container, position) {
   
             }
             
-            displayProjectList();           
+            //displayProjectList();           
+            //mainpage();
 
-
-            if (selectedProjectID > chosenButtonID)
+            localStorage.setItem("projectList", JSON.stringify(projectList));
+            if (selectedProjectID > chosenButtonID){
                 selectedProjectID = selectedProjectID - 1;
+                mainpage();
+            }
 
             else if (selectedProjectID == chosenButtonID) {
                 console.log ("SAME PROJECT");
                 selectedProjectID = 0;
                 switchProject(selectedProjectID);
             }
+
               
             console.log(projectList);
         }

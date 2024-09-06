@@ -80,7 +80,14 @@ function addToDo(currentProject) {
             taskDescription = "";
 
         //must add to the all tasks
-        let masterTaskID = projectList[0].toDoItems.length;
+        //let masterTaskID = projectList[0].toDoItems.length;
+        let masterTaskID = 0;
+        if (projectList[0].toDoItems.length == 0)
+            masterTaskID = 0;
+        else {
+
+            masterTaskID = Math.max(...(projectList[0].toDoItems).map(maxID => maxID.taskID)) + 1;
+        }
     
         if (selectedProjectID > 2)
         {
@@ -160,10 +167,10 @@ function editToDo(currentProject, taskItem, taskID) {
                     } 
                 }
 
-                //delete any straggling items in that project
-                for (let j = 0; j < (projectList[selectedProjectID].toDoItems).length; j++) {
-                    if (projectList[selectedProjectID].toDoItems[j].projID !== selectedProjectID) {
-                        projectList[selectedProjectID].toDoItems.splice(j,1);
+                //Delete project tasks from master list (REVERSE TO AVOID SKIPPING)
+                for (let i = (projectList[selectedProjectID].toDoItems).length - 1; i >= 0; i--) {
+                    if(projectList[0].toDoItems[i].projID == chosenButtonID) {
+                        projectList[0].toDoItems.splice(i,1);
                     }
                 }
 
@@ -194,18 +201,17 @@ function editToDo(currentProject, taskItem, taskID) {
                     {                        
                         projectList[newProjSelect].toDoItems.push(taskItem); 
                         //delete any straggling items in that project
-                        for (let j = 0; j < (projectList[oldProjID].toDoItems).length; j++) {
+                        for (let j = (projectList[oldProjID].toDoItems).length - 1; j >= 0; j--)  {
                             if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
                                 projectList[oldProjID].toDoItems.splice(j,1);
                             }
                         }
                     }
-
                 }
                 else if (newProjSelect < 3) {
                     //delete any straggling items in that project
-                    for (let j = 0; j < (projectList[oldProjID].toDoItems).length; j++) {
-                        if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
+                    for (let j = (projectList[oldProjID].toDoItems).length - 1; j >= 0; j--)  {
+                           if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
                             projectList[oldProjID].toDoItems.splice(j,1);
                         }
                     }
@@ -533,12 +539,12 @@ function deleteToDo (taskID, taskItem) {
     //now we have to delete from all tasks
     if (selectedProjectID > 2) {    
         //find the proj ID and task ID
-        for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+        for (let k = (projectList[0].toDoItems).length - 1; k >= 0; k--) {
             if (projectList[0].toDoItems[k].taskID == taskID) {
                     projectList[0].toDoItems.splice(k,1);
             } 
         }
-        for (let j = 0; j < (projectList[selectedProjectID].toDoItems).length; j++){
+        for (let j = (projectList[selectedProjectID].toDoItems).length - 1; j >= 0; j--) {
             if (projectList[selectedProjectID].toDoItems[j].taskID == taskID) {
                     projectList[selectedProjectID].toDoItems.splice(j,1);
             } 
@@ -552,13 +558,13 @@ function deleteToDo (taskID, taskItem) {
         //console.log ("targetP " + targetProjID + " masterTaskID " + masterTaskID);
         if (targetProjID > 2) {
             //find the proj ID and task ID
-            for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
+            for (let k = (projectList[targetProjID].toDoItems).length - 1; k >= 0; k--) {            
                 if (projectList[targetProjID].toDoItems[k].taskID == taskID) { //found projectID
                     projectList[targetProjID].toDoItems.splice(k,1);
                 } 
             }
-            for (let j = 0; j < (projectList[0].toDoItems).length; j++){
-                if (projectList[0].toDoItems[j].taskID == taskID) {
+            for (let j = (projectList[0].toDoItems).length - 1; j >= 0; j--) {
+                 if (projectList[0].toDoItems[j].taskID == taskID) {
                         projectList[0].toDoItems.splice(j,1);
                 } 
             }
@@ -567,7 +573,7 @@ function deleteToDo (taskID, taskItem) {
         if (targetProjID == 0)
         {
             //find the all task task ID
-            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+            for (let k = (projectList[0].toDoItems).length - 1; k >= 0; k--) {
                 if (projectList[0].toDoItems[k].taskID == taskID){ //found masterTaskID
                     projectList[0].toDoItems.splice(k,1);
                 }
