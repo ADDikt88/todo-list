@@ -1,15 +1,31 @@
 import {mainpage, displayProjectHeader, displayToDoItems} from "./mainpage.js";
+//import {projectListTemp} from "./index.js";
 import trashIcon from "./trash.svg";
 import goldStarIcon from  "./goldstar.svg";
 import excMarkIcon from  "./exc.svg";
 import allBoxIcon from  "./allBox.svg";
+let projectList = [];
 
 let listOfItems = [];
-let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a new task, set a priority, and pick a due date. If you make a project, you can assign tasks to them, too!", listOfItems, undefined, undefined);
-let todaysProject = createProject ("Today", "These are today's tasks (and also include any tasks past their due date). Adding a task here will automatically categorize it as due today.", listOfItems, undefined, undefined);
-let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority.", listOfItems, undefined, undefined);
-let projectList = [defaultProject, todaysProject, upcomingProject];
+
 let selectedProjectID = 0;
+
+function init() {
+    if (localStorage.getItem("projectList")) {
+        const JSONString = localStorage.getItem("projectList");
+        projectList = JSON.parse(JSONString);
+        console.log("LOADED " + projectList);
+        
+    }
+    else{
+        let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a new task, set a priority, and pick a due date. If you make a project, you can assign tasks to them, too!", listOfItems, {}, {});
+        let todaysProject = createProject ("Today", "These are today's tasks (and also include any tasks past their due date). Adding a task here will automatically categorize it as due today.", listOfItems, {}, {});
+        let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority.", listOfItems, {}, {});
+
+        projectList = [defaultProject, todaysProject, upcomingProject];
+
+    }
+}
 
 //function 
 function createProject (title, description, toDoItems, selfBtn, delBtn) {
@@ -22,6 +38,8 @@ function createProject (title, description, toDoItems, selfBtn, delBtn) {
     return {
         title, description, toDoItems, editProj, delBtn, selfBtn,
     }
+
+
 
 }
 
@@ -63,6 +81,9 @@ function newProject(container) {
 
         mainpage();
         console.log(projectList);
+
+
+        localStorage.setItem("projectList", JSON.stringify(projectList));
         return true;
       
         
@@ -77,6 +98,7 @@ function switchProject(projectID) {
     const content = document.querySelector(".main-page");
     content.innerHTML = "";
     mainpage();
+    localStorage.setItem("projectList", JSON.stringify(projectList));
     return true;        
 };
 
@@ -169,6 +191,9 @@ function displayProjectList () {
     defaultButtons(2, projectList[2].title, excMarkIconImg);
     
     projectListContainer.appendChild(addProjectBtn);
+
+    for (let j = 3; j < projectList.length; j++)
+        updateProjects (projectListContainer, j);
     
     return projectListContainer;
 }
@@ -238,6 +263,32 @@ function updateProjects (container, position) {
 
             projectList.splice(chosenButtonID,1);
 
+            //Delete project tasks from master list
+            for (let i = 0; i < projectList[0].toDoItems.length; i++) {
+                if(projectList[0].toDoItems[i].projID == chosenButtonID) {
+                    projectList[0].toDoItems.splice(i,1);
+                }
+            }
+
+            //Re-ID all projects
+            for (let j = 3; j < projectList.length; j++) {
+                for (let k = 0; k < projectList[j].toDoItems.length; k++) {
+                    projectList[j].toDoItems[k].projID = j;
+
+                    //Re-ID all projects in master list
+                    for (let l = 0; l < projectList[0].toDoItems.length; l++) {
+                        if(projectList[0].toDoItems[l].taskID == projectList[j].toDoItems[k].taskID) {
+                            projectList[0].toDoItems[l].projID = j;
+                        }
+                    }
+
+             
+                }
+            }
+            mainpage();
+                      
+
+            //Re-ID the buttons
             let projDivs = document.querySelectorAll(".projDiv");
             let projSelfBtns = document.querySelectorAll(".projSelfBtn");
             let projDelBtns = document.querySelectorAll(".projDelBtn");
@@ -248,10 +299,11 @@ function updateProjects (container, position) {
                 projDivs[k].setAttribute("id", "projID_" + k);
                 projSelfBtns[k-3].setAttribute("id", "projID_" + k + "_btn");
                 projDelBtns[k-3].setAttribute("id", "projID_" + k + "_del");
-            }
 
-            //displayProjectList();
+  
+            }
             
+            displayProjectList();           
 
 
             if (selectedProjectID > chosenButtonID)
@@ -262,18 +314,18 @@ function updateProjects (container, position) {
                 selectedProjectID = 0;
                 switchProject(selectedProjectID);
             }
-                
+              
             console.log(projectList);
         }
         
         e.preventDefault();
     });
 
-
+    localStorage.setItem("projectList", JSON.stringify(projectList));
     console.log(projectList[position]);
 
 }
 
 
 
-export {displayProjectList, selectedProjectID, createProject, projectList};
+export {displayProjectList, selectedProjectID, createProject, projectList, init};

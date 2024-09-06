@@ -27,6 +27,7 @@ function mainpage () {
     displayProjectHeader (content, currentProject);
     displayToDoItems (content, currentProject); 
     
+    localStorage.setItem("projectList", JSON.stringify(projectList));
 
     console.log(format(new Date(), "yyyy-MM-dd"));
 
@@ -84,24 +85,24 @@ function addToDo(currentProject) {
         if (selectedProjectID > 2)
         {
             projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-                undefined, undefined, undefined, dueDate, selectedProjectID, masterTaskID, false));
+                {}, {}, {}, dueDate, selectedProjectID, masterTaskID, false));
             
             currentProject.toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-                undefined, undefined, undefined, dueDate, selectedProjectID, masterTaskID, false));
+                {}, {}, {}, dueDate, selectedProjectID, masterTaskID, false));
         }
         else if (selectedProjectID == 2) {
             projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, "high", 
-                undefined, undefined, undefined, dueDate, 0, masterTaskID, false));
+                {}, {}, {}, dueDate, 0, masterTaskID, false));
         }
         else if (selectedProjectID == 1) {
             projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-                undefined, undefined, undefined, format(new Date(), "yyyy-MM-dd"), 0, masterTaskID, false));
+                {}, {}, {}, format(new Date(), "yyyy-MM-dd"), 0, masterTaskID, false));
         }
         else {
             projectList[0].toDoItems.push(createToDo(taskTitle, taskDescription, priorityLevel, 
-                undefined, undefined, undefined, dueDate, 0, masterTaskID, false));
+                {}, {}, {}, dueDate, 0, masterTaskID, false));
         }
-
+        localStorage.setItem("projectList", JSON.stringify(projectList));
         mainpage();
         return true;
                 
@@ -233,7 +234,7 @@ function editToDo(currentProject, taskItem, taskID) {
         //     //mainpage();
         // }
             //changeProject(taskItem.projID, newProjSelect, taskItem, taskID);
-
+        localStorage.setItem("projectList", JSON.stringify(projectList));
         //mainpage();
         return true;
     }
@@ -521,7 +522,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
 
     console.log(currentProject.toDoItems);
 
-
+    localStorage.setItem("projectList", JSON.stringify(projectList));
 }
 
 /****
@@ -574,6 +575,7 @@ function deleteToDo (taskID, taskItem) {
         }
 
     }
+    localStorage.setItem("projectList", JSON.stringify(projectList));
 
 }
 
