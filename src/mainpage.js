@@ -56,6 +56,18 @@ function createToDo (title, description, priority, editBtn, delBtn, checkmark, d
 
 }
 
+function editTask (taskItem, newTitle, newDesc, newPriority, newDueDate, newProj) {
+    taskItem.title = newTitle;
+    taskItem.description = newDesc;
+    taskItem.priority = newPriority;
+    taskItem.dueDate = newDueDate;
+    taskItem.projID = newProj;
+
+    return taskItem;
+
+
+}
+
 //These two functions add or edit the to do list
 function addToDo(currentProject) {
 
@@ -119,6 +131,8 @@ function addToDo(currentProject) {
 
 function editToDo(currentProject, taskItem, taskID) {
 
+
+  
     //console.log("HELP");
     let taskTitle = document.querySelector("#editTaskTitle").value;
     let taskDescription = document.querySelector("#editTaskDescription").value;
@@ -147,10 +161,11 @@ function editToDo(currentProject, taskItem, taskID) {
             //Update all tasks
             if (oldProjID == newProjSelect)
             {
-                taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, oldProjID);
+                editTask(taskItem, taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
                 for (let k = 0; k < (projectList[0].toDoItems).length; k++){
                     if (taskID == projectList[0].toDoItems[k].taskID) {
-                        projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate, oldProjID);
+                        //projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate, oldProjID);
+                        editTask(projectList[0].toDoItems[k], taskTitle, taskDescription, priorityLevel, dueDate, oldProjID);
                     } 
                 }
             }
@@ -168,7 +183,7 @@ function editToDo(currentProject, taskItem, taskID) {
                     //Find it in master list and change that one
                     for (let i = (projectList[0].toDoItems).length - 1; i >= 0; i--) {
                         if(projectList[0].toDoItems[i].taskID == taskID)
-                            projectList[0].toDoItems[i].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);                        
+                            editTask(projectList[0].toDoItems[i], taskTitle, taskDescription, priorityLevel, dueDate,  newProjSelect);                       
                     }  
 
                     //Delete project task from oldProjList
@@ -187,7 +202,7 @@ function editToDo(currentProject, taskItem, taskID) {
                     //Find it in master list and change that one
                     for (let i = (projectList[0].toDoItems).length - 1; i >= 0; i--) {
                         if(projectList[0].toDoItems[i].taskID == taskID)
-                            projectList[0].toDoItems[i].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);                        
+                            editTask(projectList[0].toDoItems[i], taskTitle, taskDescription, priorityLevel, dueDate,  newProjSelect);                         
                     }    
                     //Delete project task from oldProjList
                     for (let i = (projectList[oldProjID].toDoItems).length - 1; i >= 0; i--) {
@@ -205,20 +220,44 @@ function editToDo(currentProject, taskItem, taskID) {
     
         if (selectedProjectID < 3) {
     
+
+            //Update all tasks
+            if (oldProjID == newProjSelect)
+            {
+                editTask(taskItem, taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
+                //taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, oldProjID);
+                for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+                    if (taskID == projectList[0].toDoItems[k].taskID) {
+                        editTask(projectList[0].toDoItems[k], taskTitle, taskDescription, priorityLevel, dueDate,  oldProjID);    
+                    } 
+                }
+            }
+            else
+            {
+            //console.log("NO BREAK");
             
-            taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
             // // find the proj ID and task ID
             // for (let k = 0; k < (projectList[targetProjID].toDoItems).length; k++){
             //     if (projectList[targetProjID].toDoItems[k].taskID == taskID){ //found masterTaskID
             //         projectList[targetProjID].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
             //     }
             // }
-
-            if (oldProjID > 2) {
-                if (newProjSelect > 2) {
-                    if (newProjSelect !== oldProjID) //add the existing item to the new project
-                    {                        
-                        projectList[newProjSelect].toDoItems.push(taskItem); 
+                editTask(taskItem, taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
+                //taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, oldProjID);
+                if (oldProjID > 2) {
+                    if (newProjSelect > 2) {
+                        if (newProjSelect !== oldProjID) //add the existing item to the new project
+                        {                        
+                            projectList[newProjSelect].toDoItems.push(taskItem); 
+                            //delete any straggling items in that project
+                            for (let j = (projectList[oldProjID].toDoItems).length - 1; j >= 0; j--)  {
+                                if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
+                                    projectList[oldProjID].toDoItems.splice(j,1);
+                                }
+                            }
+                        }
+                    }
+                    else if (newProjSelect < 3) {
                         //delete any straggling items in that project
                         for (let j = (projectList[oldProjID].toDoItems).length - 1; j >= 0; j--)  {
                             if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
@@ -226,21 +265,13 @@ function editToDo(currentProject, taskItem, taskID) {
                             }
                         }
                     }
+                        
+                        
                 }
-                else if (newProjSelect < 3) {
-                    //delete any straggling items in that project
-                    for (let j = (projectList[oldProjID].toDoItems).length - 1; j >= 0; j--)  {
-                           if (projectList[oldProjID].toDoItems[j].taskID == taskID) {
-                            projectList[oldProjID].toDoItems.splice(j,1);
-                        }
+                else if (oldProjID < 3) {
+                    if (newProjSelect > 2) {
+                        projectList[newProjSelect].toDoItems.push(taskItem); 
                     }
-                }
-                       
-                    
-            }
-            else if (oldProjID < 3) {
-                if (newProjSelect > 2) {
-                    projectList[newProjSelect].toDoItems.push(taskItem); 
                 }
             }
         }
