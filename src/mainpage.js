@@ -156,29 +156,48 @@ function editToDo(currentProject, taskItem, taskID) {
             }
             else
             {
+                
 
-                taskItem.editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
+                //Move to new project
+                if (newProjSelect > 2)
+                {
 
-                //find the proj ID and task ID
-                //let counter = 0;
-                for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                    if (taskID == projectList[0].toDoItems[k].taskID) {
-                        projectList[0].toDoItems[k].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);
-                    } 
-                }
+                    //push copy of task into new project
+                    projectList[newProjSelect].toDoItems.push(taskItem);   
 
-                //Delete project tasks from master list (REVERSE TO AVOID SKIPPING)
-                for (let i = (projectList[selectedProjectID].toDoItems).length - 1; i >= 0; i--) {
-                    if(projectList[0].toDoItems[i].projID == chosenButtonID) {
-                        projectList[0].toDoItems.splice(i,1);
+                    //Find it in master list and change that one
+                    for (let i = (projectList[0].toDoItems).length - 1; i >= 0; i--) {
+                        if(projectList[0].toDoItems[i].taskID == taskID)
+                            projectList[0].toDoItems[i].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);                        
+                    }  
+
+                    //Delete project task from oldProjList
+                    for (let i = (projectList[oldProjID].toDoItems).length - 1; i >= 0; i--) {
+                        if(projectList[oldProjID].toDoItems[i].taskID == taskID) {
+                            projectList[oldProjID].toDoItems.splice(i,1);
+                        }
                     }
+                    
+
                 }
 
-                if (newProjSelect > 2) {
-                    if (newProjSelect !== selectedProjectID) //add the existing item to the new project
-                        projectList[newProjSelect].toDoItems.push(taskItem);            
+               
+                //Move to all tasks
+                if (newProjSelect < 3) {
+                    //Find it in master list and change that one
+                    for (let i = (projectList[0].toDoItems).length - 1; i >= 0; i--) {
+                        if(projectList[0].toDoItems[i].taskID == taskID)
+                            projectList[0].toDoItems[i].editItem(taskTitle, taskDescription, priorityLevel, dueDate, newProjSelect);                        
+                    }    
+                    //Delete project task from oldProjList
+                    for (let i = (projectList[oldProjID].toDoItems).length - 1; i >= 0; i--) {
+                        if(projectList[oldProjID].toDoItems[i].taskID == taskID) {
+                            projectList[oldProjID].toDoItems.splice(i,1);
+                        }
+                    }
                     
                 }
+                
             }
             
         

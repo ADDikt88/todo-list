@@ -16,8 +16,11 @@ function init() {
     if (localStorage.getItem("projectList")) {
         const JSONString = localStorage.getItem("projectList");
         projectList = JSON.parse(JSONString);
+        projectList[1].toDoItems = projectList[0].toDoItems;
+        projectList[2].toDoItems = projectList[0].toDoItems;
         
         console.log("LOADED " + projectList);
+
         
     }
     else{
@@ -212,6 +215,7 @@ function displayProjectList () {
         select.appendChild(option);
     }
     
+    selectedProjectID = 0;
     return projectListContainer;
 }
 
@@ -234,8 +238,8 @@ function updateProjects (container, position) {
 
     container.appendChild(projectItem);
 
-    selectedProjectID = position;
-    console.log ("Project " + selectedProjectID);
+    //selectedProjectID = position;
+    console.log ("Project " + position);
 
     //Create Self Selection Button
     projectItemBtn.addEventListener('click', (e) => {
@@ -247,7 +251,7 @@ function updateProjects (container, position) {
         switchProject(currentButtonID);
         e.preventDefault();
     });
-    projectList[selectedProjectID].selfBtn = projectItemBtn;
+    projectList[position].selfBtn = projectItemBtn;
 
 
     const trashIconImg = document.createElement("img");
@@ -257,9 +261,9 @@ function updateProjects (container, position) {
     projectItem.appendChild(trashIconImg);
 
     trashIconImg.setAttribute("class", "projDelBtn");
-    trashIconImg.setAttribute("id", "projID_" + selectedProjectID + "_del");
+    trashIconImg.setAttribute("id", "projID_" + position + "_del");
 
-    projectList[selectedProjectID].delBtn = trashIconImg;
+    projectList[position].delBtn = trashIconImg;
 
     trashIconImg.addEventListener('click', (e) => {
         if (confirm("Are you sure you want to remove this project?") == true) {
@@ -339,8 +343,11 @@ function updateProjects (container, position) {
             //displayProjectList();           
             //mainpage();
 
-            localStorage.setItem("projectList", JSON.stringify(projectList));
-            if (selectedProjectID > chosenButtonID){
+       
+            if (selectedProjectID < 3) {
+                mainpage();
+            }
+            else if (selectedProjectID > chosenButtonID){
                 selectedProjectID = selectedProjectID - 1;
                 mainpage();
             }
@@ -351,8 +358,11 @@ function updateProjects (container, position) {
                 switchProject(selectedProjectID);
             }
 
+
+
               
             console.log(projectList);
+            localStorage.setItem("projectList", JSON.stringify(projectList));
         }
         
         e.preventDefault();

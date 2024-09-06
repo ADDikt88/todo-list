@@ -27,6 +27,7 @@ function sidebar () {
 
     content.appendChild(logoDiv);
     content.appendChild(displayProjectList());
+    //content.appendChild()
 }
 
 export {sidebar};
