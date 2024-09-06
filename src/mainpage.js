@@ -296,63 +296,63 @@ function editToDo(currentProject, taskItem, taskID) {
     }
 };
 
-function changeProject (currentProjID, newProjID, taskItem, taskID) {
-    //3 cases
-    if (selectedProjectID > 2) {
-        //selectedProj = currentProjID
-        //switching to a built project
-        if (newProjID > 2) {
-            //change proj id for taskItem
-            taskItem.editProjID(newProjID);
+// function changeProject (currentProjID, newProjID, taskItem, taskID) {
+//     //3 cases
+//     if (selectedProjectID > 2) {
+//         //selectedProj = currentProjID
+//         //switching to a built project
+//         if (newProjID > 2) {
+//             //change proj id for taskItem
+//             taskItem.editProjID(newProjID);
 
-            //change proj id in base list
-            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (taskID == projectList[0].toDoItems[k].taskID) {
-                      projectList[0].toDoItems[k].editProjID(newProjID);
-                } 
-            }
-        }
-        //putting task in all tasks
-        else {
-            //change proj id for taskItem
-            taskItem.editProjID(newProjID);
+//             //change proj id in base list
+//             for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+//                 if (taskID == projectList[0].toDoItems[k].taskID) {
+//                       projectList[0].toDoItems[k].editProjID(newProjID);
+//                 } 
+//             }
+//         }
+//         //putting task in all tasks
+//         else {
+//             //change proj id for taskItem
+//             taskItem.editProjID(newProjID);
 
-            //change proj id in base list
-            for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                if (taskID == projectList[0].toDoItems[k].taskID) {
-                      projectList[0].toDoItems[k].editProjID(newProjID);
-                } 
-            }
+//             //change proj id in base list
+//             for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+//                 if (taskID == projectList[0].toDoItems[k].taskID) {
+//                       projectList[0].toDoItems[k].editProjID(newProjID);
+//                 } 
+//             }
 
-        }
-    }
-    if (selectedProjectID < 3) {
-        if (currentProjID > 2)  {
-            //switching to a diff built project
-            if (newProjID > 2) {
-                //change proj id for taskItem
-                taskItem.editProjID(newProjID);
+//         }
+//     }
+//     if (selectedProjectID < 3) {
+//         if (currentProjID > 2)  {
+//             //switching to a diff built project
+//             if (newProjID > 2) {
+//                 //change proj id for taskItem
+//                 taskItem.editProjID(newProjID);
 
-                //change proj id in base list
-                for (let k = 0; k < (projectList[0].toDoItems).length; k++){
-                    if (taskID == projectList[0].toDoItems[k].taskID) {
-                        projectList[0].toDoItems[k].editProjID(newProjID);
-                    } 
-                }
+//                 //change proj id in base list
+//                 for (let k = 0; k < (projectList[0].toDoItems).length; k++){
+//                     if (taskID == projectList[0].toDoItems[k].taskID) {
+//                         projectList[0].toDoItems[k].editProjID(newProjID);
+//                     } 
+//                 }
 
-            }
-            //putting task from built project into all tasks
-            else {
+//             }
+//             //putting task from built project into all tasks
+//             else {
     
-            }
-        }
+//             }
+//         }
         
-        //switching from all tasks to a built project
-        else if (currentProjID == 0) {
+//         //switching from all tasks to a built project
+//         else if (currentProjID == 0) {
 
-        }
-    }
-}
+//         }
+//     }
+// }
 
 
 
@@ -405,7 +405,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
                 }
             }
         }
-
+        localStorage.setItem("projectList", JSON.stringify(projectList));
         toDoDescription.blur();
         e.preventDefault();
     });
@@ -464,6 +464,7 @@ function updateToDoItems (currentProject, container, position, taskItem, taskID)
             //currentProject.toDoItems[currentCheckID].status = false;
             changeCheckStatus(false, taskID, taskItem);
         }
+        localStorage.setItem("projectList", JSON.stringify(projectList));
 
     });
     
@@ -669,6 +670,7 @@ function displayProjectHeader (content, currentProject) {
             optionToChange.text = currentProject.title;
 
             projectTitle.blur();
+            localStorage.setItem("projectList", JSON.stringify(projectList));
             mainpage();
             //e.preventDefault();
     });
@@ -689,7 +691,7 @@ function displayProjectHeader (content, currentProject) {
             currentProject.description = projectDescription.value;
             //update dialog here
             
-
+            localStorage.setItem("projectList", JSON.stringify(projectList));
             projectDescription.blur();
             //e.preventDefault();
         });
