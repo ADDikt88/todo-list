@@ -1,13 +1,12 @@
 import {mainpage, displayProjectHeader, displayToDoItems} from "./mainpage.js";
 import trashIcon from "./trash.svg";
-import flagIcon1 from  "./flag1.svg";
 import goldStarIcon from  "./goldstar.svg";
 import excMarkIcon from  "./exc.svg";
 import allBoxIcon from  "./allBox.svg";
 
 let listOfItems = [];
 let defaultProject = createProject ("All Tasks", "This is where all your tasks will be stored. Feel free to add a new task, set a priority, and pick a due date. If you make a project, you can assign tasks to them, too!", listOfItems, undefined, undefined);
-let todaysProject = createProject ("Today", "These are today's tasks. Adding a task here will automatically categorize it as due today.", listOfItems, undefined, undefined);
+let todaysProject = createProject ("Today", "These are today's tasks (and also include any tasks past their due date). Adding a task here will automatically categorize it as due today.", listOfItems, undefined, undefined);
 let upcomingProject = createProject ("High Priority", "These are high priority tasks. Adding a task here will automatically categorize it as high priority.", listOfItems, undefined, undefined);
 let projectList = [defaultProject, todaysProject, upcomingProject];
 let selectedProjectID = 0;
